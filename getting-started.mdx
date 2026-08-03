@@ -77,9 +77,9 @@ Before you begin, make sure you have the following installed:
       ```bash pnpm
       pnpm build
       ```
+    </CodeGroup>
 
     The build output lands in `dist/` and is ready to deploy to any static host (Netlify, Vercel, GitHub Pages, etc.).
-    </CodeGroup>
   </Step>
 
   <Step title="Preview the production build">
@@ -147,7 +147,7 @@ Retro Webpage is a **single-page application**. The HTML files under `pages/` ar
 ```html
 <script>
   window.__STATIC_PAGE_ROUTE__ = "/about";
-  if (!window.location.hash || window.location.hash === "#/") {
+  if (!window.location.hash || window.location.hash === "#/" || window.location.hash === "#") {
     window.location.hash = "/about";
   }
 </script>

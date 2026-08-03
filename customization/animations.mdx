@@ -1,7 +1,7 @@
 ---
-title: 'CSS Animations: Marquee, Blink, Caution, and EQ'
+title: 'Retro Webpage Animations: Marquee, Blink, Caution, and EQ'
 sidebarTitle: 'Animations'
-description: 'Retro Webpage includes five custom CSS animations — marquee scrolling, blinking text, moving caution stripes, EQ bar bounce, and the sparkle cursor trail.'
+description: 'Retro Webpage ships five animations — marquee scrolling, blinking text, moving caution stripes, EQ bar bounce, and a Framer Motion sparkle cursor trail.'
 ---
 
 Nothing says "1990s personal homepage" quite like text that never stops moving. Retro Webpage ships five custom CSS animations — all defined as `@keyframes` blocks in `assets/main.css` — that cover every classic GeoCities motion effect: the endlessly scrolling marquee, the cursor-grabbing blink, the hazard-tape caution stripe, the Winamp EQ bar bounce, and a Framer Motion–powered sparkle cursor trail. Each animation is designed to be immediately recognizable and trivially customizable.
@@ -184,8 +184,8 @@ The EQ animation makes vertical bar elements shrink and grow between 20% height 
 ```css
 /* assets/main.css */
 @keyframes eq-bounce {
-  0%, 100% { height: 20%; }
-  50%       { height: 100%; }
+  0%, to  { height: 20%; }
+  50%     { height: 100%; }
 }
 
 .eq-bar {
@@ -247,7 +247,7 @@ The sparkle color is chosen randomly from the four retro palette colors on every
 ```jsx
 // SparkleCursor.jsx — color palette for sparkles
 const COLORS = ['#06b6d4', '#ec4899', '#bef264', '#fbbf24'];
-// ↑ retro-teal   retro-pink  retro-lime  amber-400
+// ↑ cyan-500     retro-pink  retro-lime  amber-400
 
 // Each sparkle is a Framer Motion animated div
 <motion.div

@@ -1,5 +1,5 @@
 ---
-title: "About Page: Personal Bio with Retro Stats Panel"
+title: "About Page: Retro Bio, Stats Panel, and WinampPlayer"
 sidebarTitle: "About"
 description: "The About page features a personal bio, a Windows 98-style stats table, a missing-image avatar placeholder, and an embedded WinampPlayer widget."
 ---
@@ -130,7 +130,7 @@ The stats table is hard-coded JSX — edit the `<td>` text content directly to c
 `WinampPlayer` is a self-contained stateful component and accepts **no props**.
 
 <ParamField path="(no props)" type="—">
-  Internally tracks a `playing` boolean via `useState`. The track name (`Darude - Sandstorm.mp3 (128kbps)`) and elapsed time (`01:23`) are hard-coded in the component source. Edit `components/WinampPlayer.js` directly to change the displayed track or timestamp.
+  Internally tracks a `playing` boolean via `useState` (defaults to `true`). The track name (`Darude - Sandstorm.mp3 (128kbps)`) is hard-coded in the component source. The elapsed time display shows `01:23` when playing and `00:00` when paused. Edit `components/WinampPlayer.js` directly to change the displayed track.
 </ParamField>
 
 <Tip>

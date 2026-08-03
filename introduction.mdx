@@ -68,7 +68,7 @@ Every visual decision is grounded in the aesthetic language of the early web:
 
 ## Component Architecture
 
-Each of the 16 components is a **standalone React functional component** exported from a matching file in the `components/` directory. For example, `Layout.js` exports the `Layout` wrapper component (`Ip`) that every page uses; it composes `SparkleCursor`, `TiledBackground`, and `WebringNav` internally and renders tab-bar navigation driven by the React Router `useLocation` hook.
+Each of the 16 components is a **standalone React functional component** exported from a matching file in the `components/` directory. For example, `Layout.js` exports the `Layout` wrapper component that every page uses; it composes `SparkleCursor`, `TiledBackground`, and `WebringNav` internally and renders tab-bar navigation driven by the React Router `useLocation` hook.
 
 Because the project is distributed as a pre-built Vite output, the `components/*.js` files are already bundled. You import and use them as normal React components — no extra build step required to consume them. If you want to **modify** a component's JSX, edit the source and rebuild with `npm run build`.
 

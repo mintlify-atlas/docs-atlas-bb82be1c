@@ -1,5 +1,5 @@
 ---
-title: 'WinampPlayer: Simulated 90s Audio Player Widget'
+title: 'WinampPlayer: Retro Winamp 2.x Audio Player Widget'
 sidebarTitle: 'WinampPlayer'
 description: 'WinampPlayer renders a pixel-perfect Winamp 2.x replica with animated EQ bars, a scrolling track name, and play/pause toggle — no audio required.'
 ---
@@ -54,7 +54,7 @@ export default function RetroLayout() {
 
 **EQ bars** — When `isPlaying` is `false`, the inner `#00ff00` bar element is unmounted entirely, leaving only the dark `#003300` column backing visible — faithfully mimicking a stopped Winamp.
 
-**Stop / Prev / Next buttons** — Rendered with the same bevel styling (raised border on mount, inverted on `:active`) but carry no click handlers in the current implementation. They serve as authentic decorative controls.
+**Prev / Stop / Next buttons** — Rendered with the same bevel styling (raised border on mount, inverted on `:active`) but carry no click handlers in the current implementation. They serve as authentic decorative controls.
 
 <Note>
   The `eq-bounce` keyframe animation must be defined in your global CSS or Tailwind config for the EQ bars to animate. Confirm the keyframe is present if bars appear static while playing.

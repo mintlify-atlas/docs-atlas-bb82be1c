@@ -1,5 +1,5 @@
 ---
-title: 'GuestbookForm and GuestbookEntries Components'
+title: 'GuestbookForm and GuestbookEntries: Guestbook Components'
 sidebarTitle: 'Guestbook Form'
 description: 'GuestbookForm renders a controlled sign-in form inside a pink BeveledPanel. GuestbookEntries displays submitted entries as yellow sticky-note cards.'
 ---
@@ -77,6 +77,7 @@ export default function GuestbookPage() {
 - **Validation** — The `onSubmit` handler guards against empty fields with an early `return` before calling `onAddEntry`. Both the `name` and `message` inputs also carry the HTML `required` attribute for native browser validation as a first line of defense.
 - **Date format** — Dates are generated client-side at the moment of submission using `toLocaleDateString('en-US', ...)`, producing zero-padded `MM/DD/YYYY` strings (e.g. `07/04/2025`).
 - **Reset on submit** — Both controlled inputs are reset to `""` immediately after `onAddEntry` is called, clearing the form for the next visitor.
+- **Submit button** — The form's submit button is labelled `'Sign It!'` and uses `font-pixel` with the `bevel-outset` style, matching the site's retro aesthetic.
 - **BeveledPanel wrapper** — The entire form is rendered inside `<BeveledPanel title="Sign My Guestbook!" variant="pink">`, applying the site's beveled-border aesthetic and pink color variant automatically.
 
 <Note>

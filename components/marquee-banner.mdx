@@ -47,8 +47,8 @@ The scrolling motion is driven by the `animate-marquee` Tailwind utility, which 
 ```css
 /* Equivalent CSS for animate-marquee */
 @keyframes marquee {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(-100%); }
+  0%  { transform: translate(100%); }
+  to  { transform: translate(-100%); }
 }
 
 .animate-marquee {

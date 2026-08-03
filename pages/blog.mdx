@@ -1,5 +1,5 @@
 ---
-title: "Blog Page: Diary-style Mood Entry Posts"
+title: "Blog Page: Diary-Style Mood Entry Posts for The Diary"
 sidebarTitle: "Blog"
 description: "The Blog page (The Diary) displays MoodEntry components with post title, date, mood indicator, now-playing music, and freeform HTML content."
 ---
@@ -8,7 +8,7 @@ The Blog page (`/blog`) is titled **The Diary** and renders a chronological list
 
 ## What It Renders
 
-The page is a `max-w-2xl mx-auto` centered column containing:
+The page is a `max-w-xl mx-auto` centered column containing:
 
 1. **`<h1>` heading** — `"The Diary"` in `font-pixel text-red-500` centered.
 2. **Two `MoodEntry` components**, stacked vertically with `mb-8` spacing:
@@ -49,7 +49,7 @@ import MoodEntry from "./components/MoodEntry";
 
 export default function Blog() {
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-xl mx-auto">
       <h1 className="font-pixel text-2xl text-red-500 mb-8 text-center">
         The Diary
       </h1>
