@@ -12,13 +12,13 @@ Nothing says "1990s personal homepage" quite like text that never stops moving. 
 
 **Keyframe:** `marquee` | **Class:** `animate-marquee` | **Duration:** 15s | **Timing:** linear | **Iteration:** infinite
 
-The marquee animation slides an inline text element from fully off-screen right (`translateX(100%)`) to fully off-screen left (`translateX(-100%)`), producing the classic `<marquee>` tag behavior that GeoCities authors loved. The element must be `inline-block` with `white-space: nowrap` to prevent line breaks during travel.
+The marquee animation slides an inline text element from fully off-screen right (`translate(100%)`) to fully off-screen left (`translate(-100%)`), producing the classic `<marquee>` tag behavior that GeoCities authors loved. The element must be `inline-block` with `white-space: nowrap` to prevent line breaks during travel.
 
 ```css
 /* assets/main.css */
 @keyframes marquee {
-  0%   { transform: translate(100%); }
-  100% { transform: translate(-100%); }
+  0%  { transform: translate(100%); }
+  to  { transform: translate(-100%); }
 }
 
 .animate-marquee {
@@ -72,7 +72,7 @@ The blink animation toggles `opacity` between `1` and `0` using `step-start` tim
 /* assets/main.css */
 @keyframes blink {
   0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  50%, to { opacity: 0; }
 }
 
 .animate-blink {
@@ -130,8 +130,8 @@ The caution class renders an animated diagonal hazard-tape pattern using a `repe
 }
 
 @keyframes move-caution {
-  0%   { background-position: 0 0; }
-  100% { background-position: 28px 0; }
+  0%  { background-position: 0 0; }
+  to  { background-position: 28px 0; }
 }
 ```
 
@@ -164,8 +164,8 @@ The caution class renders an animated diagonal hazard-tape pattern using a `repe
 }
 
 @keyframes move-caution {
-  0%   { background-position: 0 0; }
-  100% { background-position: 40px 0; } /* must equal background-size width */
+  0%  { background-position: 0 0; }
+  to  { background-position: 40px 0; } /* must equal background-size width */
 }
 ```
 

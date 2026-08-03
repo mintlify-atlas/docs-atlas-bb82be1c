@@ -63,11 +63,11 @@ export default function App() {
 
 **Framer Motion animation** — Each sparkle is a `motion.div` wrapped in `AnimatePresence`:
 
-| Stage | `opacity` | `scale` | `y` | `rotate` |
-|---|---|---|---|---|
-| `initial` | `1` | `0.5` | cursor y | `0°` |
-| `animate` | `0` | `1.5` | cursor y + 20 px | `90°` |
-| `exit` | `0` | — | — | — |
+| Stage | `opacity` | `scale` | `x` | `y` | `rotate` |
+|---|---|---|---|---|---|
+| `initial` | `1` | `0.5` | cursor x | cursor y | `0°` |
+| `animate` | `0` | `1.5` | — | cursor y + 20 px | `90°` |
+| `exit` | `0` | — | — | — | — |
 
 The transition runs for **0.8 s** with an `easeOut` curve, giving sparkles a natural deceleration as they drift downward and fade.
 

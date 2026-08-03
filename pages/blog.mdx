@@ -26,7 +26,7 @@ Each `MoodEntry` renders three stacked regions:
 | Footer strip | `bg-[#f0f0f8]` | `Current Mood:` + `(-_-)` emoji · `Now Playing:` + `♫` emoji |
 
 <Note>
-  The `content` prop accepts any ReactNode — you can pass raw `<p>` tags, `<img>` elements, or even nested components. The blog uses `React.Fragment` wrappers with multiple `<p>` children.
+  The `content` prop accepts any ReactNode — you can pass raw `<p>` tags, `<img>` elements, or even nested components. The blog wraps each entry's body in a `React.Fragment` (`<>…</>`); multi-paragraph entries include multiple `<p>` children inside it.
 </Note>
 
 ## Component Overview
@@ -36,7 +36,7 @@ Each `MoodEntry` renders three stacked regions:
     A self-contained post card with a purple title bar, white content body, and a pastel footer for mood and now-playing metadata. Accepts `title`, `date`, `mood`, `music`, and a freeform `content` ReactNode.
   </Card>
   <Card title="Content Body" icon="paragraph">
-    The `content` prop renders inside a `bg-white p-4 font-sans text-sm leading-relaxed` div. Pass a `React.Fragment` with multiple `<p>` tags for multi-paragraph entries, or any other valid JSX.
+    The `content` prop renders inside a `bg-white p-4 font-sans text-sm leading-relaxed` div. Wrap the body in a `React.Fragment` (`<>…</>`) and include as many `<p>` tags as needed, or pass any other valid JSX.
   </Card>
 </CardGroup>
 
@@ -81,12 +81,14 @@ export default function Blog() {
         mood="Ecstatic"
         music="Daft Punk - Harder, Better, Faster, Stronger"
         content={
-          <p>
-            OMG I finally fixed that weird bug in the authentication flow!
-            Turns out I was mutating state directly. Rookie mistake, I know.
-            But seeing that green success message pop up was the best feeling
-            ever.
-          </p>
+          <>
+            <p>
+              OMG I finally fixed that weird bug in the authentication flow!
+              Turns out I was mutating state directly. Rookie mistake, I know.
+              But seeing that green success message pop up was the best feeling
+              ever.
+            </p>
+          </>
         }
       />
 

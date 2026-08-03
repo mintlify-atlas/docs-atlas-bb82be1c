@@ -50,7 +50,7 @@ export default function RetroLayout() {
 **Play / Pause toggle** — The component initializes with `isPlaying` set to `true`. Clicking the ⏸ / ▶ button toggles this boolean. While playing:
 - The LCD timer displays `01:23` and resets to `00:00` when paused.
 - The song name `Darude - Sandstorm.mp3 (128kbps)` scrolls horizontally via a Tailwind `animate-marquee` class.
-- Each of the 16 EQ bar columns animates independently using a `eq-bounce` CSS keyframe animation. Each column is assigned a random `animationDelay` (0–0.5 s) and `animationDuration` (0.3–0.7 s) on every render, producing the organic wobble characteristic of a real spectrum analyzer.
+- Each of the 16 EQ bar columns animates independently via the `eq-bar` CSS class, which applies the `eq-bounce` keyframe animation. Each column is assigned a random `animationDelay` (0–0.5 s) and `animationDuration` (0.3–0.7 s) on every render, producing the organic wobble characteristic of a real spectrum analyzer.
 
 **EQ bars** — When `isPlaying` is `false`, the inner `#00ff00` bar element is unmounted entirely, leaving only the dark `#003300` column backing visible — faithfully mimicking a stopped Winamp.
 
