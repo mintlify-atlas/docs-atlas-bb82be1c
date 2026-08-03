@@ -1,0 +1,78 @@
+---
+title: 'TiledBackground: Retro Grid Pattern Wrapper'
+sidebarTitle: 'TiledBackground'
+description: 'TiledBackground applies a 20px grid pattern background to any page, recreating the tiled desktop wallpaper aesthetic common in 90s web design.'
+---
+
+`TiledBackground` is a layout wrapper that envelops its children in a full-screen retro grid. It applies the cream base colour and a repeating 20 × 20 px graph-paper grid line pattern via Tailwind's custom `bg-grid-pattern` utility — a direct nod to the tiled desktop wallpapers and patterned backgrounds that defined the GeoCities era. Children are rendered inside a relatively positioned `z-10` container so they always sit above the background grid lines.
+
+## Props
+
+<ParamField path="children" type="ReactNode" required>
+  Any valid React children. They render inside a `relative z-10` div layered above the grid background.
+</ParamField>
+
+## Usage
+
+Wrap any page or section in `TiledBackground` to apply the retro grid:
+
+```jsx
+import TiledBackground from './components/TiledBackground';
+
+export default function AboutPage() {
+  return (
+    <TiledBackground>
+      <h1 className="font-pixel text-retro-teal text-3xl">About Me</h1>
+      <p className="font-vt323 text-xl">Welcome to my corner of the web!</p>
+    </TiledBackground>
+  );
+}
+```
+
+<Note>
+  `TiledBackground` is already applied globally inside `Layout`. You only need to use it directly when building a standalone page or a preview outside the main app shell.
+</Note>
+
+## The Grid Pattern
+
+The `bg-grid-pattern` CSS utility is defined in the Tailwind configuration and generates the grid via two overlapping linear gradients:
+
+```css
+/* Equivalent CSS produced by bg-grid-pattern */
+background-color: #f5f0e8; /* bg-retro-cream */
+background-image:
+  linear-gradient(#e5e7eb 1px, transparent 1px),
+  linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+background-size: 20px 20px;
+```
+
+This creates a uniform 20 px grid of `#e5e7eb` (Tailwind `gray-200`) lines over the cream base, with no JavaScript or SVG required.
+
+## DOM Structure
+
+The component renders a two-level div tree:
+
+```jsx
+<div className="min-h-screen w-full bg-retro-cream bg-grid-pattern relative">
+  <div className="relative z-10">
+    {children}
+  </div>
+</div>
+```
+
+The outer div owns the background styling and guarantees full-viewport coverage. The inner div isolates children from the background layer via stacking context.
+
+## CSS Classes
+
+| Class | Description |
+|---|---|
+| `min-h-screen` | Outer div fills at least the full viewport height |
+| `w-full` | Outer div spans the full available width |
+| `bg-retro-cream` | Custom Tailwind colour (`#f5f0e8`) — warm off-white base |
+| `bg-grid-pattern` | Custom Tailwind utility applying the 20 px graph-paper grid |
+| `relative` | Establishes a positioning context for the inner z-indexed div |
+| `relative z-10` | Lifts children above the background grid in the stacking order |
+
+<Tip>
+  To customise the grid density, change the `background-size` value in `tailwind.config.js`. For example, `40px 40px` produces a looser grid reminiscent of vintage engineering paper.
+</Tip>

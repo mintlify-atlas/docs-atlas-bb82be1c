@@ -1,0 +1,126 @@
+---
+title: "Guestbook Page: Interactive Visitor Sign-in"
+sidebarTitle: "Guestbook"
+description: "The Guestbook page lets visitors sign in with a name and message. Entries are stored in React state and rendered as sticky-note-style cards below the form."
+---
+
+The Guestbook page (`/contact`) is the interactive social hub of the site — a digital version of the paper guestbooks that sat on desks at every 1990s trade show booth. Visitors enter a name/handle and a message into a pink `BeveledPanel` form, hit the beveled "Sign It!" button, and their entry instantly appears as a yellow sticky-note card in the **Previous Visitors** section below. Two nostalgic default entries are pre-loaded to set the mood.
+
+## What It Renders
+
+The page is a `max-w-2xl mx-auto` centered column containing:
+
+1. **`<h1>` heading** — `"Sign My Guestbook"` in `font-pixel text-green-500` centered.
+2. **Intro paragraph** — `"Leave a message so I know you visited! No spam please."` in `font-sans text-sm`.
+3. **`GuestbookForm`** — A `BeveledPanel` (`variant="pink"`, titled `Sign My Guestbook!`) that wraps a two-field form:
+   - Name / Handle — `<input type="text">` with `bevel-inset` styling.
+   - Message — `<textarea>` (resizable: none, `h-24`) with `bevel-inset` styling.
+   - "Sign It!" — a `bevel-outset bg-gray-200 font-pixel` submit button.
+4. **`GuestbookEntries`** — A list section headed **Previous Visitors** in `font-vt323 text-2xl`. Each entry is a `bg-[#ffffcc] border border-[#cccc99]` sticky-note card with:
+   - A top row: `font-bold text-blue-800` username (left) + `font-vt323 text-lg` date (right).
+   - Body: `font-comic text-sm text-gray-800` message text.
+
+<Note>
+  Entry state is managed in the parent page component via `useState`. Entries submitted through `GuestbookForm` are prepended to the array (newest first). This state is **not persisted** — a full page refresh resets to the two default entries. Add a backend or `localStorage` call to the `onAddEntry` handler to persist data.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="GuestbookForm" icon="pen-to-square">
+    Controlled form component with local `name` and `message` state. Calls the `onAddEntry` callback with a new entry object on valid submit, then clears its own fields.
+  </Card>
+  <Card title="GuestbookEntries" icon="note-sticky">
+    Stateless display component. Renders the `entries` array as yellow sticky-note cards, or shows an empty-state message if the array is empty.
+  </Card>
+</CardGroup>
+
+## Default Entries
+
+| Name | Message | Date |
+|------|---------|------|
+| `CoolHacker99` | First! Awesome site dude. Love the marquee. | 11/14/2002 |
+| `WebSurfer_Girl` | Nice layout! Can we do a link exchange? Check out my blink-182 fan page! | 03/22/2003 |
+
+## Customization Example
+
+Swap the default entries, add a `localStorage` persistence layer, or wire up a real backend:
+
+```jsx
+import { useState } from "react";
+import GuestbookForm from "./components/GuestbookForm";
+import GuestbookEntries from "./components/GuestbookEntries";
+
+export default function Guestbook() {
+  // Pre-seed with default vintage entries
+  const [entries, setEntries] = useState([
+    {
+      name: "CoolHacker99",
+      message: "First! Awesome site dude. Love the marquee.",
+      date: "11/14/2002",
+    },
+    {
+      name: "WebSurfer_Girl",
+      message:
+        "Nice layout! Can we do a link exchange? Check out my blink-182 fan page!",
+      date: "03/22/2003",
+    },
+  ]);
+
+  // Called by GuestbookForm on valid submit
+  // Prepends the new entry so it appears at the top
+  const handleAddEntry = (newEntry) => {
+    setEntries([newEntry, ...entries]);
+
+    // Optional: persist to localStorage
+    // localStorage.setItem("guestbook", JSON.stringify([newEntry, ...entries]));
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <h1 className="font-pixel text-2xl text-green-500 mb-6 text-center">
+        Sign My Guestbook
+      </h1>
+      <p className="text-center font-sans text-sm mb-8">
+        Leave a message so I know you visited! No spam please.
+      </p>
+
+      {/* Form — receives the add handler */}
+      <GuestbookForm onAddEntry={handleAddEntry} />
+
+      {/* Entry list — receives the current entries array */}
+      <GuestbookEntries entries={entries} />
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### `GuestbookForm`
+
+<ParamField path="onAddEntry" type="(entry: { name: string, message: string, date: string }) => void" required>
+  Callback fired on valid form submission. Receives a new entry object with `name`, `message`, and `date` (auto-generated as `MM/DD/YYYY` from `new Date().toLocaleDateString`). Both fields are required — the form blocks submission if either is empty.
+</ParamField>
+
+### `GuestbookEntries`
+
+<ParamField path="entries" type="Array<{ name: string, message: string, date: string }>" required>
+  The array of entry objects to render. When the array is empty, the component displays `"No entries yet. Be the first to sign!"` in `font-comic text-gray-500 italic`. Entries are rendered in array order — prepend new items to show them at the top.
+</ParamField>
+
+### Entry Object Shape
+
+<ParamField path="name" type="string" required>
+  The visitor's name or internet handle. Displayed in `font-bold text-blue-800` in the card header.
+</ParamField>
+<ParamField path="message" type="string" required>
+  The visitor's message body. Rendered in `font-comic text-sm text-gray-800` with `whitespace-pre-wrap` so line breaks are preserved.
+</ParamField>
+<ParamField path="date" type="string" required>
+  The submission date as an `MM/DD/YYYY` string. Displayed in `font-vt323 text-lg` on the right side of the card header.
+</ParamField>
+
+<Tip>
+  To load persisted entries on mount, initialise the `useState` call with data from `localStorage` or a fetch: `useState(() => JSON.parse(localStorage.getItem("guestbook") ?? "[]"))`. Fall back to the default entries array when storage is empty.
+</Tip>

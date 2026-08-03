@@ -1,0 +1,92 @@
+---
+title: 'MarqueeBanner: Scrolling Text Announcement Strip'
+sidebarTitle: 'MarqueeBanner'
+description: 'MarqueeBanner renders a horizontally scrolling text strip using CSS animation, replicating the classic HTML marquee tag with a retro teal-to-pink gradient.'
+---
+
+`MarqueeBanner` recreates the beloved (and once-deprecated) HTML `<marquee>` element using modern CSS animation. It renders a full-width announcement strip in a black background with lime-green `VT323` terminal-style text that scrolls continuously from right to left. The component accepts a single text string and triples it internally so the scroll loop appears seamless — there is always visible copy on screen as the animation cycles.
+
+## Props
+
+<ParamField path="text" type="string" required>
+  The announcement text to scroll. The component renders the string three times in sequence to create a seamless infinite loop. Aim for short, punchy copy — long strings may produce visible gaps at the wrap point.
+</ParamField>
+
+<ParamField path="className" type="string" default='""'>
+  Optional additional Tailwind or CSS class names applied to the outer wrapper `<div>`. Use this to override spacing, positioning, or border styles without forking the component.
+</ParamField>
+
+## Usage
+
+```jsx
+import MarqueeBanner from './components/MarqueeBanner';
+
+export default function HomePage() {
+  return (
+    <>
+      <MarqueeBanner text="✨ Welcome to my GeoCities page! ✨  Under construction!  Best viewed in 800x600!" />
+      {/* rest of page */}
+    </>
+  );
+}
+```
+
+### With a custom className
+
+```jsx
+<MarqueeBanner
+  text="🚧 Site under construction — come back later! 🚧"
+  className="mt-4 border-t-4 border-retro-pink"
+/>
+```
+
+## Animation Details
+
+The scrolling motion is driven by the `animate-marquee` Tailwind utility, which maps to a custom keyframe:
+
+```css
+/* Equivalent CSS for animate-marquee */
+@keyframes marquee {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+}
+```
+
+The 15-second duration produces a comfortable reading speed. To adjust the pace, override the animation duration via a custom class passed through `className`, or modify the keyframe in your Tailwind config.
+
+## DOM Structure
+
+```jsx
+<div className="overflow-hidden whitespace-nowrap bg-black text-retro-lime font-vt323 text-2xl py-1 border-y-2 border-retro-lime {className}">
+  <div className="animate-marquee inline-block">
+    {text}     {text}      {text}
+  </div>
+</div>
+```
+
+The outer `overflow-hidden` div acts as the viewport mask. The inner `inline-block` div carries all three copies of the text and translates horizontally on the animation timeline.
+
+<Note>
+  The classic HTML `<marquee>` tag is officially obsolete and should not be used. `MarqueeBanner` provides the same visual effect with a CSS animation that is accessible, performant, and respects `prefers-reduced-motion` when you add a `motion-safe:` variant to the animation class.
+</Note>
+
+## CSS Classes
+
+| Class | Description |
+|---|---|
+| `overflow-hidden` | Clips text outside the banner viewport |
+| `whitespace-nowrap` | Prevents the text from wrapping to a second line |
+| `bg-black` | Solid black banner background |
+| `text-retro-lime` | Custom Tailwind colour — bright lime green terminal colour |
+| `font-vt323` | VT323 monospace pixel font, evoking CRT terminal output |
+| `text-2xl` | 24 px base font size for high visibility |
+| `border-y-2 border-retro-lime` | Top and bottom lime borders framing the banner strip |
+| `animate-marquee` | Custom keyframe that translates the inner div from `100%` to `-100%` over 15 s |
+
+<Tip>
+  For a more authentic GeoCities feel, try adding emoji or ASCII art dividers inside the `text` string: `"★·.·´¯\`·.·★  WELCOME  ★·.·´¯\`·.·★"`.
+</Tip>

@@ -1,0 +1,138 @@
+---
+title: "About Page: Personal Bio with Retro Stats Panel"
+sidebarTitle: "About"
+description: "The About page features a personal bio, a Windows 98-style stats table, a missing-image avatar placeholder, and an embedded WinampPlayer widget."
+---
+
+The About page (`/about`) uses a two-column layout to present a personal bio alongside a sidebar containing a broken-image avatar placeholder and a fully interactive `WinampPlayer` widget. The bio section includes a `BeveledPanel` titled **My Stats** that renders an RPG character-sheet–style stats table, giving the page a playful blend of GeoCities personality and Windows 98 UI aesthetics.
+
+## What It Renders
+
+The outer container is a `flex flex-col md:flex-row gap-8` wrapper that splits into:
+
+**Left column (`flex-1`):**
+1. **`<h1>` heading** — `"Stuff About Me"` in `font-pixel text-retro-pink` with a dotted bottom border.
+2. **Bio paragraphs** — Two `font-sans text-sm` paragraphs of personal copy.
+3. **My Stats `BeveledPanel`** (`variant="teal"`) — A `<table>` rendered in `font-vt323` with five rows: Class, Level, Location, Fav Color, Alignment. Alternating rows have a `bg-gray-50` stripe.
+
+**Right sidebar (`w-full md:w-64`):**
+1. **Avatar placeholder** — A `w-48 h-48 bevel-inset bg-gray-200` box displaying the text `[Image missing: me_at_computer.jpg]` in `font-comic text-gray-500`.
+2. **`WinampPlayer`** — A self-contained interactive audio player widget styled after the classic Winamp 2.x skin.
+
+<Note>
+  The avatar placeholder is intentional — it mimics the pervasive broken-image icons of 1990s personal homepages. Replace the `<div>` with an `<img>` tag when you have a real photo ready.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="BeveledPanel (teal)" icon="window-maximize">
+    Wraps the stats table with a teal Windows 98–style title bar labelled "My Stats". See the [BeveledPanel docs](/components/beveled-panel) for full prop details.
+  </Card>
+  <Card title="WinampPlayer" icon="music">
+    A pixel-perfect Winamp 2.x replica with a play/pause toggle, animated EQ bars, and a scrolling track name. Renders `Darude - Sandstorm.mp3` by default.
+  </Card>
+</CardGroup>
+
+## Customization Example
+
+Update the bio text, swap the stats table values, point the avatar at a real image, and change the Winamp track display:
+
+```jsx
+import BeveledPanel from "./components/BeveledPanel";
+import WinampPlayer from "./components/WinampPlayer";
+
+export default function About() {
+  return (
+    <div className="flex flex-col md:flex-row gap-8">
+      {/* ── Left column ── */}
+      <div className="flex-1">
+        <h1 className="font-pixel text-2xl text-retro-pink mb-6 border-b-4 border-dotted border-retro-pink pb-2">
+          Stuff About Me
+        </h1>
+
+        {/* Edit your bio copy here */}
+        <div className="font-sans text-sm space-y-4 mb-8">
+          <p>
+            Hi! I'm a web developer who still remembers when CSS was a new and
+            scary thing. I build modern applications now, but a part of my heart
+            will always belong to table layouts and spacer GIFs.
+          </p>
+          <p>
+            When I'm not coding, you can usually find me trying to configure my
+            router to get a better ping in Counter-Strike, or organizing my
+            MP3 collection.
+          </p>
+        </div>
+
+        {/* Edit the stats rows to match your own details */}
+        <BeveledPanel title="My Stats" variant="teal">
+          <table className="w-full font-vt323 text-lg text-left">
+            <tbody>
+              <tr className="border-b border-gray-200">
+                <th className="py-1 px-2 text-gray-600 w-1/3">Class:</th>
+                <td className="py-1 px-2">Full Stack Developer</td>
+              </tr>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="py-1 px-2 text-gray-600">Level:</th>
+                <td className="py-1 px-2">Senior</td>
+              </tr>
+              <tr className="border-b border-gray-200">
+                <th className="py-1 px-2 text-gray-600">Location:</th>
+                <td className="py-1 px-2">127.0.0.1</td>
+              </tr>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="py-1 px-2 text-gray-600">Fav Color:</th>
+                <td className="py-1 px-2 text-retro-teal font-bold">#0891b2</td>
+              </tr>
+              <tr>
+                <th className="py-1 px-2 text-gray-600">Alignment:</th>
+                <td className="py-1 px-2">Chaotic Good</td>
+              </tr>
+            </tbody>
+          </table>
+        </BeveledPanel>
+      </div>
+
+      {/* ── Right sidebar ── */}
+      <div className="w-full md:w-64 flex flex-col items-center gap-6">
+        {/* Replace this div with <img src="me_at_computer.jpg" alt="Me" /> */}
+        <div className="w-48 h-48 bevel-inset bg-gray-200 flex items-center justify-center border-4 border-gray-300">
+          <span className="font-comic text-gray-500 text-center p-4">
+            [Image missing: me_at_computer.jpg]
+          </span>
+        </div>
+
+        {/* WinampPlayer is self-contained — no props required */}
+        <WinampPlayer />
+      </div>
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### Stats Table Fields
+
+The stats table is hard-coded JSX — edit the `<td>` text content directly to change each value.
+
+| Row | Default Value | Description |
+|-----|---------------|-------------|
+| Class | `Full Stack Developer` | Your job title or archetype |
+| Level | `Senior` | Seniority or experience tier |
+| Location | `127.0.0.1` | Where you're based (or your IP for laughs) |
+| Fav Color | `#0891b2` | Displayed in `text-retro-teal font-bold` |
+| Alignment | `Chaotic Good` | D&D-style personality descriptor |
+
+### `WinampPlayer`
+
+`WinampPlayer` is a self-contained stateful component and accepts **no props**.
+
+<ParamField path="(no props)" type="—">
+  Internally tracks a `playing` boolean via `useState`. The track name (`Darude - Sandstorm.mp3 (128kbps)`) and elapsed time (`01:23`) are hard-coded in the component source. Edit `components/WinampPlayer.js` directly to change the displayed track or timestamp.
+</ParamField>
+
+<Tip>
+  The avatar placeholder `<div>` is sized `w-48 h-48` (192 × 192 px). When swapping in a real image, use those same dimensions and add `object-cover` to prevent distortion.
+</Tip>

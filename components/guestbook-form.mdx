@@ -1,0 +1,142 @@
+---
+title: 'GuestbookForm and GuestbookEntries Components'
+sidebarTitle: 'Guestbook Form'
+description: 'GuestbookForm renders a controlled sign-in form inside a pink BeveledPanel. GuestbookEntries displays submitted entries as yellow sticky-note cards.'
+---
+
+No GeoCities page was complete without a guestbook — a little corner of the internet where visitors could leave their mark, say hi from AOL, and promise to return. `GuestbookForm` and `GuestbookEntries` work as a pair to recreate this experience: the form collects a name and message inside a pink beveled panel, while the entries list renders each submission as a cheerful yellow sticky-note card with a VT323 timestamp.
+
+---
+
+## GuestbookForm
+
+`GuestbookForm` is a controlled React form component. It manages its own `name` and `message` input state, validates both fields on submit, constructs a timestamped entry object, and hands it upward to the parent via the `onAddEntry` callback — leaving storage and rendering entirely to the parent's discretion.
+
+### Props
+
+<ParamField path="onAddEntry" type="(entry: { name: string, message: string, date: string }) => void" required>
+  Callback invoked when the user submits the form with both fields filled. Receives a single entry object containing:
+  - `name` — the value from the Name / Handle input
+  - `message` — the value from the Message textarea
+  - `date` — the submission date formatted as `MM/DD/YYYY` (e.g. `"07/04/2025"`) via `new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })`
+
+  After calling `onAddEntry`, the form resets both fields to empty strings.
+</ParamField>
+
+### Usage
+
+<CodeGroup>
+```jsx Standalone with local state
+import { useState } from 'react';
+import GuestbookForm from './components/GuestbookForm';
+import GuestbookEntries from './components/GuestbookEntries';
+
+export default function GuestbookPage() {
+  const [entries, setEntries] = useState([]);
+
+  const handleAddEntry = (entry) => {
+    setEntries((prev) => [entry, ...prev]);
+  };
+
+  return (
+    <section className="max-w-lg mx-auto py-8">
+      <GuestbookForm onAddEntry={handleAddEntry} />
+      <GuestbookEntries entries={entries} />
+    </section>
+  );
+}
+```
+
+```jsx With localStorage persistence
+import { useState, useEffect } from 'react';
+import GuestbookForm from './components/GuestbookForm';
+import GuestbookEntries from './components/GuestbookEntries';
+
+export default function GuestbookPage() {
+  const [entries, setEntries] = useState(() => {
+    const saved = localStorage.getItem('guestbook');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('guestbook', JSON.stringify(entries));
+  }, [entries]);
+
+  return (
+    <section className="max-w-lg mx-auto py-8">
+      <GuestbookForm onAddEntry={(e) => setEntries((prev) => [e, ...prev])} />
+      <GuestbookEntries entries={entries} />
+    </section>
+  );
+}
+```
+</CodeGroup>
+
+### Behavior Notes
+
+- **Validation** — The `onSubmit` handler guards against empty fields with an early `return` before calling `onAddEntry`. Both the `name` and `message` inputs also carry the HTML `required` attribute for native browser validation as a first line of defense.
+- **Date format** — Dates are generated client-side at the moment of submission using `toLocaleDateString('en-US', ...)`, producing zero-padded `MM/DD/YYYY` strings (e.g. `07/04/2025`).
+- **Reset on submit** — Both controlled inputs are reset to `""` immediately after `onAddEntry` is called, clearing the form for the next visitor.
+- **BeveledPanel wrapper** — The entire form is rendered inside `<BeveledPanel title="Sign My Guestbook!" variant="pink">`, applying the site's beveled-border aesthetic and pink color variant automatically.
+
+<Note>
+  Focus styles switch the input and textarea borders from `border-gray-400` to `border-retro-pink`. Ensure `retro-pink` is defined in your Tailwind theme for the focus highlight to appear.
+</Note>
+
+---
+
+## GuestbookEntries
+
+`GuestbookEntries` is a pure display component. It receives the array of entry objects managed by the parent and renders them as a stacked list of yellow sticky-note cards beneath a dotted-border "Previous Visitors" heading.
+
+### Props
+
+<ParamField path="entries" type="Array<{ name: string, message: string, date: string }>" required>
+  Array of entry objects to display. Each object must have:
+  - `name` — displayed in bold blue (`text-blue-800`) at the top-left of the card
+  - `date` — displayed in VT323 font at the top-right of the card
+  - `message` — rendered as a paragraph with `font-comic` and `whitespace-pre-wrap` to preserve any line breaks the visitor typed
+
+  Pass an empty array `[]` to show the empty-state prompt.
+</ParamField>
+
+### Usage
+
+<CodeGroup>
+```jsx With entries from parent state
+import GuestbookEntries from './components/GuestbookEntries';
+
+const entries = [
+  { name: 'xX_WebMaster_Xx', message: 'gr8 site!! bookmarked :)', date: '01/15/2025' },
+  { name: 'stargazer99',     message: 'love the vibes\ncool music too', date: '01/16/2025' },
+];
+
+export default function EntriesPreview() {
+  return <GuestbookEntries entries={entries} />;
+}
+```
+
+```jsx Empty state
+import GuestbookEntries from './components/GuestbookEntries';
+
+export default function EmptyGuestbook() {
+  // Renders: "No entries yet. Be the first to sign!"
+  return <GuestbookEntries entries={[]} />;
+}
+```
+</CodeGroup>
+
+### Behavior Notes
+
+- **Empty state** — When `entries.length === 0`, a centered italic paragraph reading `"No entries yet. Be the first to sign!"` is rendered in place of the card list. This uses `font-comic` and `text-gray-500` styling.
+- **Card styling** — Each entry card uses `bg-[#ffffcc] border border-[#cccc99]` with a subtle `box-shadow` offset (`2px 2px 0px rgba(0,0,0,0.1)`) to simulate a physical sticky note pinned to the page.
+- **Card layout** — The name and date sit on a flex row separated by a dashed bottom border (`border-dashed border-[#cccc99]`). The message text below uses `whitespace-pre-wrap` so newlines entered in the textarea are preserved in the display.
+- **Key prop** — Entries are keyed by array index (`r` in the source). If you support entry deletion or reordering, switch to a stable unique ID (e.g. a UUID generated at submission time) to avoid reconciliation issues.
+
+<Tip>
+  Prepend new entries to the array (`[newEntry, ...prev]`) rather than appending (`[...prev, newEntry]`) so the most recent signature appears at the top of the list — just like a real guestbook opened to the latest page.
+</Tip>
+
+<Tip>
+  Add a cap (e.g. `entries.slice(0, 20)`) before passing the array to `GuestbookEntries` if you're persisting to `localStorage` to prevent the card list from growing unbounded over time.
+</Tip>

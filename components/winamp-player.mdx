@@ -1,0 +1,79 @@
+---
+title: 'WinampPlayer: Simulated 90s Audio Player Widget'
+sidebarTitle: 'WinampPlayer'
+description: 'WinampPlayer renders a pixel-perfect Winamp 2.x replica with animated EQ bars, a scrolling track name, and play/pause toggle — no audio required.'
+---
+
+`WinampPlayer` is a fully self-contained widget that recreates the iconic Winamp 2.x media player interface straight from 1999 — dark chrome panels, a green-on-black LCD display, bevel-styled transport buttons, and a 16-column animated EQ visualizer. It carries no real audio playback; the illusion is purely visual, making it a perfect decorative centerpiece for any retro portfolio page.
+
+## Props
+
+`WinampPlayer` accepts no props. All state is managed internally.
+
+<Note>
+  The component is fully self-contained. Drop it anywhere in your JSX and it works out of the box — no configuration, no context, no audio files required.
+</Note>
+
+## Usage
+
+<CodeGroup>
+```jsx Basic
+import WinampPlayer from './components/WinampPlayer';
+
+export default function Sidebar() {
+  return (
+    <aside>
+      <WinampPlayer />
+    </aside>
+  );
+}
+```
+
+```jsx Inside a layout column
+import WinampPlayer from './components/WinampPlayer';
+
+export default function RetroLayout() {
+  return (
+    <div className="flex gap-8">
+      <main>{/* page content */}</main>
+      <aside className="flex flex-col items-center gap-4">
+        <WinampPlayer />
+      </aside>
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+## Behavior & Animation
+
+**Play / Pause toggle** — The component initializes with `isPlaying` set to `true`. Clicking the ⏸ / ▶ button toggles this boolean. While playing:
+- The LCD timer displays `01:23` and resets to `00:00` when paused.
+- The song name `Darude - Sandstorm.mp3 (128kbps)` scrolls horizontally via a Tailwind `animate-marquee` class.
+- Each of the 16 EQ bar columns animates independently using a `eq-bounce` CSS keyframe animation. Each column is assigned a random `animationDelay` (0–0.5 s) and `animationDuration` (0.3–0.7 s) on every render, producing the organic wobble characteristic of a real spectrum analyzer.
+
+**EQ bars** — When `isPlaying` is `false`, the inner `#00ff00` bar element is unmounted entirely, leaving only the dark `#003300` column backing visible — faithfully mimicking a stopped Winamp.
+
+**Stop / Prev / Next buttons** — Rendered with the same bevel styling (raised border on mount, inverted on `:active`) but carry no click handlers in the current implementation. They serve as authentic decorative controls.
+
+<Note>
+  The `eq-bounce` keyframe animation must be defined in your global CSS or Tailwind config for the EQ bars to animate. Confirm the keyframe is present if bars appear static while playing.
+</Note>
+
+## Customization Tips
+
+<Tip>
+  **Change the track name** — The scrolling song title is a static string inside the component. Replace `"Darude - Sandstorm.mp3 (128kbps)"` with any text to brand the player as your own mixtape.
+</Tip>
+
+<Tip>
+  **Resize the widget** — The outer container is fixed at `w-64`. Swap it for any Tailwind width class (e.g. `w-72`, `w-80`) or remove it entirely and let the parent control sizing. The internal flex layout will adapt.
+</Tip>
+
+<Tip>
+  **Wire up real audio** — Add an `<audio>` ref and call `.play()` / `.pause()` inside the existing `onClick` handler for the play/pause button to turn the prop into a real media controller.
+</Tip>
+
+<Tip>
+  **Adjust EQ randomness** — The `Math.random()` calls for `animationDelay` and `animationDuration` run at render time. Seed them with deterministic values if you need consistent animations across server and client renders (important for SSR/hydration parity).
+</Tip>

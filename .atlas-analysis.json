@@ -1,0 +1,93 @@
+{
+  "projectType": "frontend",
+  "projectName": "Retro Webpage",
+  "projectDescription": "A React + Vite personal portfolio and homepage styled to recreate the nostalgic look and feel of late-1990s / early-2000s GeoCities websites, complete with retro UI components, animations, and classic web motifs.",
+  "theme": "willow",
+  "primaryColor": "#0891b2",
+  "lightColor": "#bef264",
+  "darkColor": "#ec4899",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "getting-started"]
+          },
+          {
+            "group": "Site Structure",
+            "pages": ["pages/home", "pages/about", "pages/projects", "pages/skills", "pages/work", "pages/blog", "pages/guestbook"]
+          }
+        ]
+      },
+      {
+        "tab": "Components",
+        "groups": [
+          {
+            "group": "Layout & Shell",
+            "pages": ["components/layout", "components/tiled-background", "components/marquee-banner", "components/beveled-panel"]
+          },
+          {
+            "group": "Interactive Widgets",
+            "pages": ["components/winamp-player", "components/visitor-counter", "components/sparkle-cursor", "components/guestbook-form"]
+          },
+          {
+            "group": "Content & Display",
+            "pages": ["components/folder-icon", "components/forum-quote", "components/mood-entry", "components/system-requirements", "components/webring-nav", "components/badges"]
+          }
+        ]
+      },
+      {
+        "tab": "Customization",
+        "groups": [
+          {
+            "group": "Styling",
+            "pages": ["customization/colors", "customization/typography", "customization/animations"]
+          },
+          {
+            "group": "Configuration",
+            "pages": ["customization/routing", "customization/deployment"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Retro 90s/Y2K GeoCities aesthetic with beveled borders and pixel fonts",
+    "Animated sparkle cursor trail effect",
+    "Scrolling marquee banner with configurable text",
+    "Simulated Winamp music player widget",
+    "Visitor counter with animated digit display",
+    "Interactive guestbook with in-memory entry storage",
+    "Windows 98-style beveled panel UI components",
+    "Folder icon file browser for project listings",
+    "phpBB-style forum quote layout for testimonials",
+    "Tiled grid background pattern",
+    "WebRing navigation component",
+    "Under construction banner widget",
+    "Mood/diary entry component",
+    "Skill progress bars and system requirements display",
+    "React Router-powered multi-page SPA",
+    "Framer Motion animations throughout"
+  ],
+  "publicApiSurface": [
+    "BeveledPanel({ children, title, variant, className })",
+    "FolderIcon({ name, size, date, isNew })",
+    "ForumQuote({ author, role, date, content })",
+    "GuestbookForm({ onAddEntry })",
+    "GuestbookEntries({ entries })",
+    "Layout (wraps SparkleCursor, TiledBackground, WebringNav)",
+    "MarqueeBanner({ text, className })",
+    "MoodEntry({ title, date, mood, music, content })",
+    "NewBadge (inline NEW badge with blink animation)",
+    "SparkleCursor (fixed-position animated sparkle trail)",
+    "SystemRequirements (static Windows 98 spec panel)",
+    "TiledBackground({ children })",
+    "UnderConstruction (blinking caution banner)",
+    "VisitorCounter (animated hit counter display)",
+    "WebringNav (previous/random/next ring links)",
+    "WinampPlayer (simulated audio player with EQ bars)",
+    "Routes: /, /about, /projects, /skills, /work, /case-studies, /blog, /testimonials, /contact"
+  ]
+}

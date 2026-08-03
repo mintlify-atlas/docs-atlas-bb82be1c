@@ -1,0 +1,197 @@
+---
+title: 'Retro Webpage Typography: Four Font Families'
+sidebarTitle: 'Typography'
+description: 'Retro Webpage ships four Tailwind font utilities mapping to Press Start 2P, VT323, Comic Neue, and Verdana — each evoking a distinct era of 90s web typography.'
+---
+
+Typography is one of the most expressive parts of any 1990s GeoCities aesthetic. Retro Webpage registers four Tailwind font-family utilities that span the full spectrum of era-authentic type: chunky pixel headings, green-screen terminal text, the beloved Comic Sans spiritual successor, and the trusty Verdana that shipped with every copy of Internet Explorer 4. Each font serves a distinct visual role, and all four are loaded via a single Google Fonts `@import` at the top of `main.css`.
+
+## How Fonts Are Loaded
+
+Fonts are fetched at build time via a Google Fonts `@import` statement at the very top of `assets/main.css`. No additional `<link>` tags are needed in `index.html` — the stylesheet handles everything.
+
+```css
+/* assets/main.css — top of file */
+@import "https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap";
+```
+
+<Note>
+  The import also loads **Silkscreen** (a secondary pixel font not currently mapped to a Tailwind utility). You can expose it by adding `'font-silk': ['Silkscreen', 'cursive']` to your Tailwind config. `Verdana` and `Tahoma` are system fonts and require no download.
+</Note>
+
+---
+
+## Font Utility Classes
+
+### `font-pixel` — Press Start 2P
+
+**Stack:** `'Press Start 2P', cursive`
+
+Press Start 2P is an 8-bit bitmap typeface modeled after the character ROM of early 1980s arcade cabinets and NES cartridges. Its chunky, fully-pixelated letterforms make it the go-to choice for any heading, button label, or UI element that needs to look like it belongs on a game cartridge or a MIDI sequencer.
+
+**When to use it:** Page headings, button text, badge labels, section titles, the "UNDER CONSTRUCTION" callout.
+
+```jsx
+// Pixel heading with drop shadow for depth
+<h1 className="font-pixel text-2xl text-retro-teal drop-shadow-[2px_2px_0px_#000]">
+  Welcome to My Homepage!
+</h1>
+
+// Small pixel label on a button
+<button className="font-pixel text-[10px] px-3 py-1 bevel-outset border-2 border-gray-400">
+  Click Here!!!
+</button>
+
+// "UNDER CONSTRUCTION" banner text (as used in UnderConstruction.jsx)
+<h3 className="font-pixel text-sm text-yellow-800 animate-blink">
+  UNDER CONSTRUCTION
+</h3>
+```
+
+<Note>
+  Press Start 2P renders at very small sizes with poor legibility. The project uses `text-[10px]` for navigation tab labels and `text-sm` (14px) as the practical minimum for comfortable reading.
+</Note>
+
+---
+
+### `font-vt323` — VT323
+
+**Stack:** `VT323, monospace`
+
+VT323 is a monospaced pixel font that faithfully recreates the character set of DEC VT100-series terminals from the late 1970s and early 1980s. Its tall, scanline-style letterforms look at home in any dark-background terminal context. Unlike Press Start 2P it stays sharp at large display sizes (24px and above), making it excellent for numeric readouts and scrolling text.
+
+**When to use it:** Visitor counter digits, Winamp time display, `MarqueeBanner` scroll text, any "green screen" or terminal-style element. Headings (`h1`–`h6`) also default to VT323 via a global CSS rule.
+
+```jsx
+// Visitor counter digit (from VisitorCounter.jsx)
+<div className="w-6 h-8 bg-black text-retro-lime font-vt323 text-2xl
+                flex items-center justify-center border border-gray-800">
+  {digit}
+</div>
+
+// Winamp time display (from WinampPlayer.jsx)
+<div className="text-[#00ff00] font-vt323 text-2xl w-16 text-right">
+  01:23
+</div>
+
+// Large display heading
+<h2 className="font-vt323 text-3xl text-retro-pink">
+  My Projects
+</h2>
+```
+
+<Tip>
+  All HTML heading elements (`h1`–`h6`) have `font-family: VT323, monospace` applied globally in `main.css`. This means headings throughout the app default to VT323 without any extra class — add `font-pixel` explicitly when you want the blockier 8-bit look instead.
+</Tip>
+
+---
+
+### `font-comic` — Comic Neue
+
+**Stack:** `Comic Neue, cursive`
+
+Comic Neue is a refined redesign of Comic Sans MS that preserves the casual, hand-lettered character of the original while fixing its proportional irregularities. It is the body copy font of choice for personal blog posts, guestbook entries, mood diary text, and any prose that should feel conversational and approachable.
+
+**When to use it:** Paragraph text, guestbook entries, `MoodEntry` content, `ForumQuote` body, casual labels, the `UnderConstruction` subtext.
+
+```jsx
+// Body paragraph text
+<p className="font-comic text-sm leading-relaxed text-gray-700">
+  Hi! I'm a web developer who loves the early internet aesthetic.
+  Please sign my guestbook before you leave!
+</p>
+
+// Guestbook entry body
+<div className="font-comic text-sm italic text-[#333333]">
+  "{entry.message}"
+</div>
+
+// UnderConstruction subtext (from UnderConstruction.jsx)
+<p className="font-comic text-sm text-yellow-700">
+  Please excuse the dust! I'm still learning HTML.
+</p>
+```
+
+---
+
+### `font-sans` — Verdana / Tahoma
+
+**Stack:** `Verdana, Tahoma, sans-serif`
+
+Verdana was designed by Matthew Carter in 1996 specifically for screen legibility at small sizes — it was the default body font of countless corporate intranets and personal pages of the late 1990s. In Retro Webpage it is applied to `<body>` and `<html>` as the base font, and via `font-sans` for UI chrome: form field labels, navigation metadata, the Winamp control strip, and any text that needs clean on-screen readability rather than retro character.
+
+**When to use it:** Form fields, system-level UI labels, footer metadata, any text where legibility at small sizes matters more than nostalgia.
+
+```jsx
+// Form input label
+<label className="font-sans text-sm text-gray-700 font-bold">
+  Your Name:
+</label>
+<input
+  className="font-sans text-sm w-full p-2 bevel-inset border
+             focus:outline-none focus:border-retro-pink"
+  type="text"
+/>
+
+// Footer tagline (from Layout.jsx)
+<p className="font-vt323 text-gray-500 text-sm">
+  © 2024 Webmaster. Best viewed at 1024x768 in Netscape Navigator 4.
+</p>
+
+// Winamp strip label (from WinampPlayer.jsx)
+<span className="font-sans text-[#a0a0b0] text-[10px] font-bold">
+  EQ PL
+</span>
+```
+
+<Note>
+  `font-sans` in this project maps to `Verdana, Tahoma, sans-serif` — not Tailwind's default Inter/system-ui stack. This override is set in both `tailwind.config.js` and the `html` element's `font-family` in `main.css`, so it applies globally without any utility class.
+</Note>
+
+---
+
+## Font Summary Table
+
+| Class | Font Family | Stack | Best For |
+|---|---|---|---|
+| `font-pixel` | Press Start 2P | `'Press Start 2P', cursive` | Headings, buttons, badge labels |
+| `font-vt323` | VT323 | `VT323, monospace` | Terminal display, counters, scroll text |
+| `font-comic` | Comic Neue | `Comic Neue, cursive` | Body copy, diary entries, casual prose |
+| `font-sans` | Verdana | `Verdana, Tahoma, sans-serif` | Form fields, UI chrome, metadata |
+
+---
+
+## Adding or Swapping Fonts
+
+To replace or add a font, update the Google Fonts import in `main.css` and extend the Tailwind config:
+
+<CodeGroup>
+
+```css main.css — add a new Google Font import
+@import "https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&family=Orbitron:wght@400;700&display=swap";
+```
+
+```js tailwind.config.js — register the new utility class
+export default {
+  theme: {
+    extend: {
+      fontFamily: {
+        pixel:   ['"Press Start 2P"', 'cursive'],
+        vt323:   ['VT323', 'monospace'],
+        comic:   ['Comic Neue', 'cursive'],
+        sans:    ['Verdana', 'Tahoma', 'sans-serif'],
+        // New font
+        orbitron: ['Orbitron', 'sans-serif'],
+      },
+    },
+  },
+};
+```
+
+```jsx Usage — apply via the new Tailwind class
+<h2 className="font-orbitron text-xl text-retro-teal">
+  Sector 7-G Status
+</h2>
+```
+
+</CodeGroup>

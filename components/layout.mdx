@@ -1,0 +1,84 @@
+---
+title: 'Layout: App Shell with Nav, Cursor, and Webring'
+sidebarTitle: 'Layout'
+description: 'The Layout component wraps the entire Retro Webpage SPA, composing the sparkle cursor, tiled grid background, top navigation bar, and webring footer.'
+---
+
+`Layout` is the top-level shell of the Retro Webpage application. It wires together every persistent UI layer — the animated sparkle cursor trail, the tiled grid background, a pixel-font navigation bar, and a webring footer — then delegates page rendering to React Router's `<HashRouter>`. Every route in the SPA lives inside `Layout`, so global chrome (cursor, background, nav, webring) is always present regardless of which page the visitor is on.
+
+## How It Works
+
+`Layout` composes four building blocks:
+
+| Piece | Role |
+|---|---|
+| `SparkleCursor` | Fixed-position sparkle particle trail that follows the mouse (`z-50`) |
+| `TiledBackground` | Full-page retro grid pattern wrapper (see [TiledBackground](/components/tiled-background)) |
+| `<nav>` | Top navigation bar linking all nine pages |
+| `WebringNav` | Footer webring strip reminiscent of 1990s site rings |
+
+Inside `TiledBackground`, a `<HashRouter>` mounts a `<Routes>` tree that maps each URL path to its corresponding page component.
+
+## Navigation Links
+
+The nav bar (`bg-[#9999cc]`, `font-pixel`, `bevel-outset`) renders links to every top-level route:
+
+| Label | Path |
+|---|---|
+| Home | `/` |
+| About | `/about` |
+| Projects | `/projects` |
+| Skills | `/skills` |
+| Work | `/work` |
+| Case Studies | `/case-studies` |
+| Blog | `/blog` |
+| Testimonials | `/testimonials` |
+| Contact | `/contact` |
+
+## Usage
+
+`Layout` is rendered once at the application root and requires no props — all composition happens internally.
+
+```jsx
+import Layout from './components/Layout';
+
+// In main.jsx / index.jsx
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <Layout />
+  </React.StrictMode>
+);
+```
+
+<Note>
+  `Layout` uses `HashRouter` (URL hash-based routing) rather than `BrowserRouter`. This means all URLs take the form `https://example.com/#/about`. This is intentional for static hosting compatibility — no server-side routing configuration is required.
+</Note>
+
+## Adding a New Route
+
+To add a page to the SPA, register a new `<Route>` inside the `<Routes>` block in `Layout.js` and add a matching `<Link>` to the `<nav>`:
+
+```jsx
+// Inside Layout.js — add to the <Routes> block
+import NewPage from './pages/NewPage';
+
+<Route path="/new-page" element={<NewPage />} />
+
+// Inside the <nav> — add a link
+<Link to="/new-page" className="font-pixel text-white hover:underline">
+  New Page
+</Link>
+```
+
+<Tip>
+  All page components receive the `TiledBackground` grid and `SparkleCursor` automatically because they render inside `Layout`. You don't need to add either wrapper to individual page files.
+</Tip>
+
+## CSS Classes
+
+| Class | Description |
+|---|---|
+| `bg-[#9999cc]` | Muted periwinkle blue nav background evoking classic GeoCities palettes |
+| `font-pixel` | Custom pixel/bitmap font applied to nav link labels |
+| `bevel-outset` | Windows 98-style raised border effect on the nav bar |
+| `fixed z-50` | Keeps `SparkleCursor` above all page content at all times |

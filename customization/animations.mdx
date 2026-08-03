@@ -1,0 +1,295 @@
+---
+title: 'CSS Animations: Marquee, Blink, Caution, and EQ'
+sidebarTitle: 'Animations'
+description: 'Retro Webpage includes five custom CSS animations — marquee scrolling, blinking text, moving caution stripes, EQ bar bounce, and the sparkle cursor trail.'
+---
+
+Nothing says "1990s personal homepage" quite like text that never stops moving. Retro Webpage ships five custom CSS animations — all defined as `@keyframes` blocks in `assets/main.css` — that cover every classic GeoCities motion effect: the endlessly scrolling marquee, the cursor-grabbing blink, the hazard-tape caution stripe, the Winamp EQ bar bounce, and a Framer Motion–powered sparkle cursor trail. Each animation is designed to be immediately recognizable and trivially customizable.
+
+## Animation Reference
+
+### `animate-marquee` — Scrolling Text
+
+**Keyframe:** `marquee` | **Class:** `animate-marquee` | **Duration:** 15s | **Timing:** linear | **Iteration:** infinite
+
+The marquee animation slides an inline text element from fully off-screen right (`translateX(100%)`) to fully off-screen left (`translateX(-100%)`), producing the classic `<marquee>` tag behavior that GeoCities authors loved. The element must be `inline-block` with `white-space: nowrap` to prevent line breaks during travel.
+
+```css
+/* assets/main.css */
+@keyframes marquee {
+  0%   { transform: translate(100%); }
+  100% { transform: translate(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 15s linear infinite;
+}
+```
+
+**Components that use it:** `MarqueeBanner` (the full-width lime-on-black ticker at the top of the page), `WinampPlayer` (the song title scroll inside the player display).
+
+```jsx
+// MarqueeBanner.jsx — lime text scrolling on black
+<div className="overflow-hidden whitespace-nowrap bg-black text-retro-lime
+                font-vt323 text-2xl py-1 border-y-2 border-retro-lime">
+  <div className="animate-marquee inline-block">
+    {text}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{text}
+  </div>
+</div>
+
+// WinampPlayer.jsx — song title inside the player
+<div className="text-[#00ff00] font-vt323 text-sm truncate
+                animate-marquee w-full overflow-hidden whitespace-nowrap">
+  Darude - Sandstorm.mp3 (128kbps)
+</div>
+```
+
+**Customizing speed:** Override the `animation-duration` property. Lower values scroll faster; higher values scroll slower.
+
+```css
+/* Faster marquee — 6 seconds per pass */
+.animate-marquee {
+  animation-duration: 6s;
+}
+
+/* Slower marquee — 30 seconds per pass */
+.animate-marquee {
+  animation-duration: 30s;
+}
+```
+
+---
+
+### `animate-blink` — Blinking Text
+
+**Keyframe:** `blink` | **Class:** `animate-blink` | **Duration:** 0.8s | **Timing:** step-start | **Iteration:** infinite
+
+The blink animation toggles `opacity` between `1` and `0` using `step-start` timing, which means the transition is instantaneous — exactly how the old Netscape `<blink>` tag behaved. Opacity is `1` for the first 49% of each cycle, then snaps to `0` for the final 51%, producing a crisp digital flash rather than a fade.
+
+```css
+/* assets/main.css */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 0.8s step-start infinite;
+}
+```
+
+**Components that use it:** `UnderConstruction` — the "UNDER CONSTRUCTION" heading blinks to demand the visitor's attention.
+
+```jsx
+// UnderConstruction.jsx
+<h3 className="font-pixel text-sm text-yellow-800 mb-2 animate-blink">
+  UNDER CONSTRUCTION
+</h3>
+```
+
+**Customizing speed:** Change the duration to control flash rate. The `step-start` timing function must be preserved to keep the abrupt on/off behavior.
+
+```css
+/* Slow, dramatic blink — 1.5 seconds */
+.animate-blink {
+  animation: blink 1.5s step-start infinite;
+}
+
+/* Rapid flash effect — 0.3 seconds */
+.animate-blink {
+  animation: blink 0.3s step-start infinite;
+}
+```
+
+<Note>
+  Using `ease` or `linear` timing instead of `step-start` will produce a fade effect rather than a hard blink, which looks markedly less authentic but may be preferable for accessibility.
+</Note>
+
+---
+
+### `bg-caution` — Moving Caution Stripes
+
+**Keyframe:** `move-caution` | **Class:** `bg-caution` | **Duration:** 2s | **Timing:** linear | **Iteration:** infinite
+
+The caution class renders an animated diagonal hazard-tape pattern using a `repeating-linear-gradient` of amber (`#fbbf24`) and black stripes. The `move-caution` keyframe shifts `background-position` from `0 0` to `28px 0` over 2 seconds, making the stripes appear to scroll horizontally in a continuous loop — the same effect used on road construction barriers.
+
+```css
+/* assets/main.css */
+.bg-caution {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #fbbf24,
+    #fbbf24 10px,
+    #000 10px,
+    #000 20px
+  );
+  background-size: 28px 28px;
+  animation: move-caution 2s linear infinite;
+}
+
+@keyframes move-caution {
+  0%   { background-position: 0 0; }
+  100% { background-position: 28px 0; }
+}
+```
+
+**Components that use it:** `UnderConstruction` — two full-width caution bars frame the construction notice, one above and one below the message.
+
+```jsx
+// UnderConstruction.jsx — top and bottom caution bars
+<div className="w-full my-6 flex flex-col items-center
+                border-4 border-dashed border-yellow-400 p-4 bg-yellow-50">
+  <div className="w-full h-4 bg-caution mb-4" />
+  {/* construction message */}
+  <div className="w-full h-4 bg-caution mt-4" />
+</div>
+```
+
+**Customizing speed and stripe width:** The animation duration and `background-position` endpoint must match `background-size` to keep the scroll seamless. If you change the stripe width, update all three values together.
+
+```css
+/* Wider, faster stripes */
+.bg-caution {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #fbbf24,
+    #fbbf24 14px,
+    #000 14px,
+    #000 28px
+  );
+  background-size: 40px 40px;
+  animation: move-caution 1s linear infinite; /* faster */
+}
+
+@keyframes move-caution {
+  0%   { background-position: 0 0; }
+  100% { background-position: 40px 0; } /* must equal background-size width */
+}
+```
+
+<Tip>
+  To reverse the scroll direction, change the endpoint to a negative value — `background-position: -28px 0` — or flip the gradient angle from `-45deg` to `45deg`.
+</Tip>
+
+---
+
+### `eq-bar` / `eq-bounce` — Winamp EQ Bars
+
+**Keyframe:** `eq-bounce` | **Class:** `eq-bar` | **Duration:** 0.5s (base, varies per bar) | **Timing:** ease-in-out | **Iteration:** infinite alternate
+
+The EQ animation makes vertical bar elements shrink and grow between 20% height (resting) and 100% height (peak), using `alternate` iteration so each bar gently bounces up and down rather than jumping back to the start. Each of the 16 bars in the Winamp visualizer gets a different `animation-delay` and `animation-duration` via `:nth-child()` selectors, creating the staggered, organic look of a real spectrum analyzer.
+
+```css
+/* assets/main.css */
+@keyframes eq-bounce {
+  0%, 100% { height: 20%; }
+  50%       { height: 100%; }
+}
+
+.eq-bar {
+  animation: eq-bounce 0.5s ease-in-out infinite alternate;
+}
+
+/* Staggered delays per bar */
+.eq-bar:nth-child(2) { animation-delay: 0.1s; animation-duration: 0.4s; }
+.eq-bar:nth-child(3) { animation-delay: 0.2s; animation-duration: 0.6s; }
+.eq-bar:nth-child(4) { animation-delay: 0.3s; animation-duration: 0.5s; }
+.eq-bar:nth-child(5) { animation-delay: 0.4s; animation-duration: 0.7s; }
+```
+
+**Components that use it:** `WinampPlayer` — the 16-column green EQ visualizer rendered inside the player's display panel.
+
+```jsx
+// WinampPlayer.jsx — EQ bar array (simplified)
+<div className="h-8 flex items-end gap-[2px] mt-1">
+  {[...Array(16)].map((_, i) => (
+    <div
+      key={i}
+      className="w-1.5 h-full bg-[#003300] relative overflow-hidden"
+    >
+      {isPlaying && (
+        <div
+          className="absolute bottom-0 w-full bg-[#00ff00] eq-bar"
+          style={{
+            animationDelay:    `${Math.random() * 0.5}s`,
+            animationDuration: `${0.3 + Math.random() * 0.4}s`,
+          }}
+        />
+      )}
+    </div>
+  ))}
+</div>
+```
+
+**Customizing EQ speed:** Adjust the base duration on `.eq-bar` and scale the per-child durations proportionally.
+
+```css
+/* Slower, lazier EQ bounce */
+.eq-bar               { animation-duration: 1.0s; }
+.eq-bar:nth-child(2)  { animation-duration: 0.8s; }
+.eq-bar:nth-child(3)  { animation-duration: 1.2s; }
+.eq-bar:nth-child(4)  { animation-duration: 1.0s; }
+.eq-bar:nth-child(5)  { animation-duration: 1.4s; }
+```
+
+---
+
+### Sparkle Cursor Trail
+
+**Library:** Framer Motion (`motion.div`) | **Duration:** 0.8s per particle | **Timing:** easeOut
+
+The sparkle cursor trail is the one animation that does not use CSS keyframes. `SparkleCursor.jsx` listens to `mousemove` events and spawns SVG four-pointed star elements at the cursor position using Framer Motion's `AnimatePresence`. Each sparkle fades from `opacity: 1` to `opacity: 0`, scales from 0.5× to 1.5×, drifts 20px downward, and rotates 90°, all over 0.8 seconds with an `easeOut` curve.
+
+The sparkle color is chosen randomly from the four retro palette colors on every particle spawn:
+
+```jsx
+// SparkleCursor.jsx — color palette for sparkles
+const COLORS = ['#06b6d4', '#ec4899', '#bef264', '#fbbf24'];
+// ↑ retro-teal   retro-pink  retro-lime  amber-400
+
+// Each sparkle is a Framer Motion animated div
+<motion.div
+  initial={{ opacity: 1, scale: 0.5, x: e.x, y: e.y }}
+  animate={{ opacity: 0, scale: 1.5, y: e.y + 20, rotate: 90 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.8, ease: 'easeOut' }}
+  className="absolute"
+  style={{ left: -10, top: -10 }}
+>
+  <svg width="20" height="20" viewBox="0 0 24 24">
+    <path
+      d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"
+      fill={sparkleColor}
+    />
+  </svg>
+</motion.div>
+```
+
+**Customizing the sparkle trail:** Adjust the `transition.duration` for longer / shorter trails, change the `animate.y` offset to control how far each star drifts, or update the `COLORS` array to match a custom palette.
+
+```jsx
+// Longer trail, more drift, custom colors
+transition={{ duration: 1.4, ease: 'easeOut' }}
+animate={{ opacity: 0, scale: 2, y: e.y + 50, rotate: 180 }}
+
+const COLORS = ['#0891b2', '#ec4899', '#bef264', '#f97316'];
+//               retro-teal  retro-pink  retro-lime  orange
+```
+
+<Note>
+  The sparkle cursor is throttled to fire at most once every 50ms (`if (now - lastTime < 50) return`) and keeps at most 15 particles alive at a time (`.slice(-15)`). Removing these limits on slower machines can cause noticeable jank.
+</Note>
+
+---
+
+## Animation Quick Reference
+
+| Class / Effect | Keyframe | Duration | Timing | Used In |
+|---|---|---|---|---|
+| `animate-marquee` | `marquee` | 15s | linear | `MarqueeBanner`, `WinampPlayer` |
+| `animate-blink` | `blink` | 0.8s | step-start | `UnderConstruction` |
+| `bg-caution` | `move-caution` | 2s | linear | `UnderConstruction` |
+| `eq-bar` | `eq-bounce` | 0.5s (varies) | ease-in-out | `WinampPlayer` |
+| Sparkle cursor | Framer Motion | 0.8s | easeOut | `SparkleCursor` |

@@ -1,0 +1,171 @@
+---
+title: 'Customize Retro Webpage Color Palette'
+sidebarTitle: 'Colors'
+description: 'Retro Webpage uses four named color tokens — retro-teal, retro-pink, retro-lime, and retro-cream — plus four bevel CSS classes that reference them.'
+---
+
+Retro Webpage ships a tightly curated four-color palette that channels the bold, clashing hues of mid-1990s personal homepages. Each color is registered as a custom Tailwind token — accessible via `bg-*`, `text-*`, and `border-*` utility classes — so you can apply them anywhere in your JSX without reaching for inline styles. The bevel classes layer those colors into beveled-border panel variants, faithfully recreating the raised-button aesthetic of Windows 95 dialog boxes.
+
+## Color Tokens
+
+The four named tokens are defined as Tailwind theme extensions and compiled into the output stylesheet as rgb() utility classes.
+
+| Token | Hex | RGB | Primary Use |
+|---|---|---|---|
+| `retro-teal` | `#0891b2` | rgb(8, 145, 178) | Panel title bars, primary text, borders |
+| `retro-pink` | `#ec4899` | rgb(236, 72, 153) | Secondary accents, pink panel variant, headings |
+| `retro-lime` | `#bef264` | rgb(190, 242, 100) | Terminal text, marquee borders, lime accents |
+| `retro-cream` | `#fafafa` | rgb(250, 250, 250) | Page background (`<body>`) |
+
+### retro-teal
+
+`retro-teal` is the primary brand color. It fills the title bar of every default `BeveledPanel`, appears on hover link states, and is used as a border accent throughout the layout.
+
+```jsx
+// Panel with teal title bar (default variant)
+<BeveledPanel title="My Projects">
+  <p className="text-retro-teal font-vt323 text-xl">
+    Under construction since 1997.
+  </p>
+</BeveledPanel>
+```
+
+### retro-pink
+
+`retro-pink` is the secondary accent. It drives the pink `BeveledPanel` variant, colors active focus rings on form inputs, and appears as the hover text color on navigation links.
+
+```jsx
+// Pink panel variant
+<BeveledPanel title="About Me" variant="pink">
+  <p className="font-comic text-sm leading-relaxed">
+    Welcome to my corner of the internet!
+  </p>
+</BeveledPanel>
+```
+
+### retro-lime
+
+`retro-lime` is the terminal accent — its high brightness against dark backgrounds makes it ideal for the `MarqueeBanner` (black background, lime text and border), the `VisitorCounter` digit display, and the `WinampPlayer` EQ readout.
+
+```jsx
+// Marquee banner uses retro-lime text on black
+<div className="bg-black text-retro-lime border-y-2 border-retro-lime font-vt323 text-2xl">
+  <span className="animate-marquee inline-block">
+    ★ Welcome to my page ★ Sign my guestbook! ★
+  </span>
+</div>
+```
+
+### retro-cream
+
+`retro-cream` is the near-white page background applied to `<body>`. Its slight warmth prevents the harshness of pure white while keeping the grid pattern and bevel shadows legible.
+
+```jsx
+// Applied by default on <body> — override if you want a tiled background
+<div className="bg-retro-cream min-h-screen">
+  {/* page content */}
+</div>
+```
+
+---
+
+## Bevel Classes
+
+The four `bevel-*` classes are custom CSS utilities defined in `main.css`. Each combines an `outset` or `inset` border style (the classic Windows 95 3-D effect) with a matching background color.
+
+```css
+/* main.css — custom bevel utilities */
+
+.bevel-outset {
+  border-style: outset;
+  border-width: 4px;
+  border-color: #e5e7eb;   /* Tailwind gray-200 */
+  background-color: #f3f4f6; /* Tailwind gray-100 */
+}
+
+.bevel-inset {
+  border-style: inset;
+  border-width: 4px;
+  border-color: #e5e7eb;
+  background-color: #ffffff;
+}
+
+.bevel-teal {
+  border-style: outset;
+  border-width: 4px;
+  border-color: #06b6d4;   /* Tailwind cyan-500 */
+  background-color: #cffafe; /* Tailwind cyan-100 */
+}
+
+.bevel-pink {
+  border-style: outset;
+  border-width: 4px;
+  border-color: #ec4899;   /* retro-pink */
+  background-color: #fce7f3; /* Tailwind pink-100 */
+}
+```
+
+| Class | Border Style | Border Color | Background |
+|---|---|---|---|
+| `bevel-outset` | outset | `#e5e7eb` | `#f3f4f6` |
+| `bevel-inset` | inset | `#e5e7eb` | `#ffffff` |
+| `bevel-teal` | outset | `#06b6d4` | `#cffafe` |
+| `bevel-pink` | outset | `#ec4899` | `#fce7f3` |
+
+<Note>
+  `bevel-inset` is used on interior content areas and is also applied as the `:active` state of buttons (`.active:bevel-inset`), so clicking a beveled button produces a pressed-in visual effect.
+</Note>
+
+The `BeveledPanel` component uses these classes directly based on its `variant` prop:
+
+```jsx
+// BeveledPanel.jsx (simplified)
+const variantClass = {
+  default: 'bevel-outset',
+  teal:    'bevel-teal',
+  pink:    'bevel-pink',
+  inset:   'bevel-inset',
+}[variant];
+```
+
+---
+
+## Customizing the Palette
+
+To swap the color tokens, locate the Tailwind config (typically `tailwind.config.js` at the project root) and update the `theme.extend.colors` entries. The CSS output — including all `bg-retro-*`, `text-retro-*`, and `border-retro-*` classes — will regenerate automatically on the next build.
+
+<CodeGroup>
+
+```js tailwind.config.js — change color tokens
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        'retro-teal':  '#0e7490', // swap to a darker teal
+        'retro-pink':  '#db2777', // swap to deep magenta
+        'retro-lime':  '#84cc16', // swap to standard lime
+        'retro-cream': '#fffbeb', // swap to warm amber-tinted white
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+```css main.css — update bevel classes to match
+/* If you change retro-pink, update bevel-pink to match */
+.bevel-pink {
+  border-style: outset;
+  border-width: 4px;
+  border-color: #db2777; /* new retro-pink value */
+  background-color: #fce7f3;
+}
+```
+
+</CodeGroup>
+
+<Tip>
+  The bevel classes in `main.css` reference hardcoded hex values, not Tailwind CSS variables. If you change the token colors in `tailwind.config.js`, remember to manually update the matching hex values inside `.bevel-teal` and `.bevel-pink` in `main.css` so the beveled panels stay in sync.
+</Tip>

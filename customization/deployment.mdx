@@ -1,0 +1,167 @@
+---
+title: 'Deploy Retro Webpage to GitHub Pages or Netlify'
+sidebarTitle: 'Deployment'
+description: 'Build Retro Webpage with Vite and deploy the static output to GitHub Pages, Netlify, or Vercel. HashRouter requires no server-side redirect configuration.'
+---
+
+Retro Webpage is a fully static site — Vite compiles the React source into plain HTML, CSS, and JavaScript files that can be hosted anywhere a web server can serve files. There is no backend, no Node.js runtime required in production, and no database to configure. This guide walks through building the project and deploying it to the three most popular static hosts: GitHub Pages, Netlify, and Vercel.
+
+## Build the Project
+
+Before deploying, you need to produce the production bundle. Vite compiles, minifies, and fingerprints all assets into a `dist/` directory.
+
+```bash
+npm run build
+```
+
+After the build completes, the output structure looks like this:
+
+```
+dist/
+├── index.html            # App entry point
+├── .nojekyll             # Prevents GitHub Pages Jekyll processing
+├── assets/
+│   ├── main.js           # Bundled React app (fingerprinted)
+│   └── main.css          # Compiled Tailwind CSS (fingerprinted)
+├── components/           # Pre-built component modules
+└── pages/
+    ├── About.html
+    ├── Blog.html
+    └── ...               # One shell file per route
+```
+
+To verify the build locally before deploying, run the Vite preview server:
+
+```bash
+npm run preview
+```
+
+This serves the `dist/` folder at `http://localhost:4173` and behaves identically to a production static host.
+
+---
+
+## Deploy to GitHub Pages
+
+GitHub Pages serves the contents of a branch or folder directly as a static site. The repository already includes a `.nojekyll` file at the root, which tells GitHub Pages to skip its Jekyll build pipeline and serve your files as-is.
+
+<Steps>
+  <Step title="Build the project">
+    Run the production build to generate the `dist/` folder:
+
+    ```bash
+    npm run build
+    ```
+  </Step>
+
+  <Step title="Configure the GitHub Pages source">
+    In your repository on GitHub, go to **Settings → Pages**. Under **Build and deployment**, set the source to **GitHub Actions** (recommended) or point it at the branch and folder that contains your built files.
+  </Step>
+
+  <Step title="Deploy using GitHub Actions (recommended)">
+    Create a workflow file at `.github/workflows/deploy.yml` to automate builds on every push:
+
+    ```yaml
+    name: Deploy to GitHub Pages
+
+    on:
+      push:
+        branches: [main]
+
+    jobs:
+      deploy:
+        runs-on: ubuntu-latest
+        permissions:
+          contents: read
+          pages: write
+          id-token: write
+        steps:
+          - uses: actions/checkout@v4
+          - uses: actions/setup-node@v4
+            with:
+              node-version: 20
+          - run: npm ci
+          - run: npm run build
+          - uses: actions/upload-pages-artifact@v3
+            with:
+              path: dist
+          - uses: actions/deploy-pages@v4
+    ```
+  </Step>
+
+  <Step title="Verify the deployment">
+    Once the workflow succeeds, GitHub Pages will serve your site at `https://<your-username>.github.io/<repo-name>/`. Open the URL and confirm that navigating between pages updates the hash fragment correctly (e.g., `/#/about`).
+  </Step>
+</Steps>
+
+---
+
+## Deploy to Netlify
+
+Netlify can build and deploy your site automatically from a Git repository or from a manual file upload.
+
+<Steps>
+  <Step title="Connect your repository">
+    Log in to [app.netlify.com](https://app.netlify.com) and click **Add new site → Import an existing project**. Select your Git provider and choose the repository.
+  </Step>
+
+  <Step title="Configure the build settings">
+    Netlify will usually detect the Vite framework automatically. Confirm or set these values manually:
+
+    | Setting | Value |
+    |---|---|
+    | **Build command** | `npm run build` |
+    | **Publish directory** | `dist` |
+    | **Node version** | `20` (set in Environment variables as `NODE_VERSION`) |
+  </Step>
+
+  <Step title="Deploy the site">
+    Click **Deploy site**. Netlify runs the build command, uploads the `dist/` output to its CDN, and provides a live URL in the format `https://<random-slug>.netlify.app`.
+  </Step>
+
+  <Step title="Set a custom domain (optional)">
+    In **Site configuration → Domain management**, add your custom domain and follow the DNS instructions. Netlify provisions a free TLS certificate via Let's Encrypt automatically.
+  </Step>
+</Steps>
+
+---
+
+## Deploy to Vercel
+
+Vercel's zero-configuration deployment works seamlessly with Vite projects.
+
+<Steps>
+  <Step title="Import your project">
+    Log in to [vercel.com](https://vercel.com) and click **Add New → Project**. Import the repository from your Git provider.
+  </Step>
+
+  <Step title="Confirm the framework preset">
+    Vercel auto-detects Vite and pre-fills the correct settings. Verify that the **Framework Preset** is set to **Vite**, the **Build Command** is `npm run build`, and the **Output Directory** is `dist`.
+  </Step>
+
+  <Step title="Deploy">
+    Click **Deploy**. Vercel builds the project and serves it at `https://<project-name>.vercel.app`. Every subsequent push to the default branch triggers an automatic re-deployment.
+  </Step>
+</Steps>
+
+---
+
+<Note>
+  Because Retro Webpage uses **HashRouter**, all routing is handled entirely in the browser via the URL `#` fragment. The server only ever needs to serve one file — `index.html` — regardless of which page the user navigates to. This means you do **not** need a `_redirects` file (Netlify), a `vercel.json` rewrite rule, or any other server-side catch-all configuration. The `.nojekyll` file already present in the repo is the only host-specific file needed for GitHub Pages.
+</Note>
+
+<Tip>
+  If you deploy to a **subdirectory** rather than a domain root (e.g., `https://yourname.github.io/retro-webpage/`), you must set the `base` option in `vite.config.js` to match the subdirectory path. Without this, Vite generates asset paths relative to `/` and the browser will fail to load scripts and styles.
+
+  ```js
+  // vite.config.js
+  import { defineConfig } from 'vite'
+  import react from '@vitejs/plugin-react'
+
+  export default defineConfig({
+    plugins: [react()],
+    base: '/retro-webpage/', // 👈 match your GitHub Pages repo name
+  })
+  ```
+
+  After updating `base`, re-run `npm run build` and redeploy. You can leave `base` as `'/'` (the default) when deploying to a domain root on Netlify or Vercel.
+</Tip>

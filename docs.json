@@ -1,72 +1,68 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Retro Webpage",
+  "theme": "willow",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
-  },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "primary": "#0891b2",
+    "light": "#bef264",
+    "dark": "#ec4899"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
     "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "type": "github",
+      "href": "https://github.com/apursley2012/retro-webpage"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/apursley2012/retro-webpage"
     }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "getting-started"]
+          },
+          {
+            "group": "Site Structure",
+            "pages": ["pages/home", "pages/about", "pages/projects", "pages/skills", "pages/work", "pages/blog", "pages/guestbook"]
+          }
+        ]
+      },
+      {
+        "tab": "Components",
+        "groups": [
+          {
+            "group": "Layout & Shell",
+            "pages": ["components/layout", "components/tiled-background", "components/marquee-banner", "components/beveled-panel"]
+          },
+          {
+            "group": "Interactive Widgets",
+            "pages": ["components/winamp-player", "components/visitor-counter", "components/sparkle-cursor", "components/guestbook-form"]
+          },
+          {
+            "group": "Content & Display",
+            "pages": ["components/folder-icon", "components/forum-quote", "components/mood-entry", "components/system-requirements", "components/webring-nav", "components/badges"]
+          }
+        ]
+      },
+      {
+        "tab": "Customization",
+        "groups": [
+          {
+            "group": "Styling",
+            "pages": ["customization/colors", "customization/typography", "customization/animations"]
+          },
+          {
+            "group": "Configuration",
+            "pages": ["customization/routing", "customization/deployment"]
+          }
+        ]
+      }
+    ]
   }
 }

@@ -1,0 +1,137 @@
+---
+title: "Home Page: The GeoCities-era Welcome Screen"
+sidebarTitle: "Home"
+description: "The Home page combines a marquee banner, updates panel, visitor counter, and webring badges to create the quintessential 90s personal homepage experience."
+---
+
+The Home page (`/`) is the first thing visitors see and sets the entire retro tone of the site. It assembles a `MarqueeBanner` at the very top, a large pixel-art welcome heading, two side-by-side `BeveledPanel` widgets, an `UnderConstruction` banner, a `VisitorCounter`, and a pair of authenticity badges — all stacked to mimic a classic GeoCities personal homepage from the late 1990s.
+
+## What It Renders
+
+The page is a single vertically-centered flex column. From top to bottom it contains:
+
+1. **`MarqueeBanner`** — A full-width scrolling lime-green ticker on a black background that reads `WELCOME TO MY HOMEPAGE!!!`.
+2. **Welcome heading** — An `<h1>` styled with `font-pixel` in `text-retro-teal` that says `Hello World!`, paired with a `font-comic` subtitle inviting visitors to "Grab a Surge, turn up your speakers, and stay a while!"
+3. **Two-column panel grid** — A responsive `md:grid-cols-2` grid containing:
+   - **Updates** `BeveledPanel` (`variant="teal"`) — a bulleted list of dated site changes.
+   - **My Web Rings** `BeveledPanel` (`variant="pink"`) — two bordered placeholder webring boxes (Geocities Neighborhood, HTML Webmasters).
+4. **`UnderConstruction`** — A blinking yellow caution banner with wrench icons.
+5. **`VisitorCounter`** — A retro digit counter that animates from `001336` → `001337` on mount.
+6. **Authenticity badges** — Two small inset text boxes: `Valid HTML 4.01` and `Best viewed in Netscape`.
+
+<Note>
+  The `VisitorCounter` uses a one-second `setTimeout` to animate the count up by one on every page load — giving the impression of a live hit counter.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="MarqueeBanner" icon="terminal">
+    Renders a looping CSS marquee. Accepts a `text` prop and an optional `className` for width/margin overrides.
+  </Card>
+  <Card title="BeveledPanel" icon="window-maximize">
+    A Windows 98–style panel with a title bar and minimize/maximize/close buttons. Supports `teal`, `pink`, and `inset` variants.
+  </Card>
+  <Card title="UnderConstruction" icon="triangle-exclamation">
+    A self-contained blinking yellow banner with a caution stripe. Takes no props.
+  </Card>
+  <Card title="VisitorCounter" icon="hashtag">
+    A six-digit LED-style hit counter that increments by one on mount. Takes no props.
+  </Card>
+</CardGroup>
+
+## Customization Example
+
+Replace the marquee text, update the changelog entries inside the `Updates` panel, and swap out the webring labels to match your own communities:
+
+```jsx
+import MarqueeBanner from "./components/MarqueeBanner";
+import BeveledPanel from "./components/BeveledPanel";
+import UnderConstruction from "./components/UnderConstruction";
+import VisitorCounter from "./components/VisitorCounter";
+
+export default function Home() {
+  return (
+    <div className="flex flex-col items-center">
+      {/* Change the scrolling banner text */}
+      <MarqueeBanner text="WELCOME TO MY HOMEPAGE!!!" className="w-full mb-8" />
+
+      <div className="text-center mb-8">
+        <h1 className="font-pixel text-2xl md:text-4xl text-retro-teal mb-4">
+          Hello World!
+        </h1>
+        <p className="font-comic text-lg text-gray-700 max-w-lg mx-auto">
+          Welcome to my little corner of the World Wide Web.
+          Grab a Surge, turn up your speakers, and stay a while!
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-8">
+        {/* Edit changelog entries here */}
+        <BeveledPanel title="Updates" variant="teal">
+          <ul className="list-disc list-inside font-sans text-sm space-y-2 p-2">
+            <li><span className="text-red-500 font-bold">11/14/24:</span> Added a new guestbook!</li>
+            <li><span className="text-red-500 font-bold">10/31/24:</span> Happy Halloween! Changed background.</li>
+            <li><span className="text-red-500 font-bold">09/15/24:</span> Site launched! Still fixing some broken image links.</li>
+          </ul>
+        </BeveledPanel>
+
+        {/* Swap in your own webring names and border colors */}
+        <BeveledPanel title="My Web Rings" variant="pink">
+          <div className="flex flex-col items-center justify-center h-full gap-2">
+            <div className="border border-blue-500 p-1 text-xs text-blue-500 text-center w-32">
+              Geocities<br />Neighborhood
+            </div>
+            <div className="border border-green-500 p-1 text-xs text-green-500 text-center w-32">
+              HTML<br />Webmasters
+            </div>
+          </div>
+        </BeveledPanel>
+      </div>
+
+      <UnderConstruction />
+      <VisitorCounter />
+
+      {/* Replace badge text with your own validators */}
+      <div className="mt-8 flex gap-4">
+        <div className="border border-gray-400 p-1 text-[10px] font-sans bg-gray-100">
+          Valid HTML 4.01
+        </div>
+        <div className="border border-gray-400 p-1 text-[10px] font-sans bg-gray-100">
+          Best viewed in Netscape
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### `MarqueeBanner`
+
+<ParamField path="text" type="string" required>
+  The string to repeat and scroll across the banner. Rendered three times separated by whitespace to create a seamless loop.
+</ParamField>
+<ParamField path="className" type="string" default='""'>
+  Additional Tailwind classes applied to the outer wrapper — useful for controlling width (`w-full`) and margin (`mb-8`).
+</ParamField>
+
+### `BeveledPanel`
+
+<ParamField path="title" type="string">
+  Text shown in the Windows 98–style title bar. When omitted the title bar is hidden entirely.
+</ParamField>
+<ParamField path="variant" type='"default" | "teal" | "pink" | "inset"' default='"default"'>
+  Controls the beveled border style and title bar colour. `teal` → `bevel-teal` + teal title bar; `pink` → `bevel-pink` + pink title bar; `inset` → `bevel-inset` with no inner re-bevel.
+</ParamField>
+<ParamField path="className" type="string" default='""'>
+  Extra classes merged onto the outermost panel `<div>`.
+</ParamField>
+<ParamField path="children" type="ReactNode" required>
+  Content rendered inside the white inner area of the panel.
+</ParamField>
+
+<Tip>
+  You can nest any JSX inside `BeveledPanel` — lists, tables, images, or even other panels. The `variant` prop only changes the outer border and title bar; the inner content area is always a white `bevel-inset` box.
+</Tip>

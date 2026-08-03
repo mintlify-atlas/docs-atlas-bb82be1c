@@ -1,0 +1,90 @@
+---
+title: "Retro Webpage: 90s GeoCities Portfolio in React"
+sidebarTitle: "Introduction"
+description: "Retro Webpage is a React + Vite personal portfolio template with 16 retro-themed components, Framer Motion animations, and React Router navigation."
+---
+
+Retro Webpage is a single-page application portfolio template that faithfully recreates the chaotic charm of a 1990s GeoCities website — animated marquees, beveled panels, sparkle cursors, and all — while running on a thoroughly modern React 18 + Vite stack. Whether you want a genuinely nostalgic personal site or a playful creative showcase, this template gives you a fully wired starting point styled circa 1998–2003.
+
+## Tech Stack
+
+Retro Webpage is built on a lean set of well-supported libraries:
+
+| Technology | Version | Role |
+|---|---|---|
+| React | 18 | UI rendering and component model |
+| Vite | Latest | Dev server, bundler, and build tool |
+| Tailwind CSS | Latest | Utility-first styling |
+| Framer Motion | Latest | Page transitions and element animations |
+| React Router | v6 | Client-side SPA routing |
+
+## What's Included
+
+The template ships ready to deploy, with nine pre-built pages and sixteen retro UI components.
+
+**9 pre-built pages** — each mapped to a React Router route:
+
+| Route | Page HTML shell | Purpose |
+|---|---|---|
+| `/` | `index.html` | Home |
+| `/about` | `pages/About.html` | About Me |
+| `/projects` | `pages/Projects.html` | Projects |
+| `/skills` | `pages/Skills.html` | Skills |
+| `/work` | `pages/Work.html` | Résumé |
+| `/case-studies` | `pages/CaseStudies.html` | Long Reads |
+| `/blog` | `pages/Blog.html` | Diary |
+| `/testimonials` | `pages/Testimonials.html` | Guestbook |
+| `/contact` | `pages/Contact.html` | Contact |
+
+**16 retro UI components** — all pre-built, pre-styled, and ready to drop into any page:
+
+- `Layout` — tab-bar navigation, tiled background, sparkle cursor, webring footer
+- `BeveledPanel` — Windows 98-style raised/sunken border panels
+- `MarqueeBanner` — horizontally scrolling announcement strip
+- `VisitorCounter` — the classic 7-segment hit counter
+- `UnderConstruction` — animated "Under Construction" warning block
+- `WinampPlayer` — decorative media player widget
+- `FolderIcon` — Windows-style folder with a label
+- `SparkleCursor` — trailing sparkle effect on the mouse pointer
+- `TiledBackground` — repeating texture background
+- `WebringNav` — era-authentic webring navigation bar
+- `NewBadge` — blinking "NEW!" badge overlay
+- `SystemRequirements` — "Best viewed in Netscape Navigator" disclaimer
+- `MoodEntry` — LiveJournal-style mood indicator
+- `GuestbookForm` — sign-the-guestbook entry form
+- `GuestbookEntries` — list of guestbook submissions
+- `ForumQuote` — BBCode-style quoted reply block
+
+## Design Motifs
+
+Every visual decision is grounded in the aesthetic language of the early web:
+
+- **Windows 98 beveled borders** — inset and outset box-shadow borders that replicate the classic OS chrome
+- **Retro typography** — `Press Start 2P` for pixel-perfect headings, `VT323` for monospace terminal text, and `Comic Neue` for body copy
+- **Teal / pink / lime palette** — the tab bar ships with `bg-retro-teal`, `bg-retro-pink`, and `bg-retro-lime` as the primary accent colours, complemented by purple, orange, blue, red, yellow, and green for each nav tab
+- **Animated marquees** — horizontally scrolling text banners powered by CSS animation
+- **Blinking text and badges** — CSS `blink`-style keyframe animations on `NewBadge` and status indicators
+- **Pixel art aesthetic** — icon-scale UI elements, pixelated fonts, and low-resolution textures
+
+## Component Architecture
+
+Each of the 16 components is a **standalone React functional component** exported from a matching file in the `components/` directory. For example, `Layout.js` exports the `Layout` wrapper component (`Ip`) that every page uses; it composes `SparkleCursor`, `TiledBackground`, and `WebringNav` internally and renders tab-bar navigation driven by the React Router `useLocation` hook.
+
+Because the project is distributed as a pre-built Vite output, the `components/*.js` files are already bundled. You import and use them as normal React components — no extra build step required to consume them. If you want to **modify** a component's JSX, edit the source and rebuild with `npm run build`.
+
+## Explore the Template
+
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="rocket" href="/getting-started">
+    Clone the repo, install dependencies, and spin up the dev server in under five minutes.
+  </Card>
+  <Card title="Home Page" icon="house" href="/pages/home">
+    Walkthrough of the root route and the components it composes.
+  </Card>
+  <Card title="Layout Component" icon="layout-panel-top" href="/components/layout">
+    Deep-dive into the tab-bar navigation, tiled background, and footer webring.
+  </Card>
+  <Card title="Customizing Colors" icon="palette" href="/customization/colors">
+    Swap the teal/pink/lime palette to match your own retro colour scheme.
+  </Card>
+</CardGroup>

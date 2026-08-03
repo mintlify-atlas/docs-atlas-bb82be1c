@@ -1,0 +1,52 @@
+---
+title: 'WebringNav: 90s Webring Navigation Footer'
+sidebarTitle: 'WebringNav'
+description: 'WebringNav renders a classic webring navigation panel with Previous, Random, and Next Site links — a nostalgic nod to the era of hand-curated web directories.'
+---
+
+Before search engines dominated discovery, webrings were how the early web found itself — hand-curated rings of thematically related personal pages, each one linking to the previous and next member in the circle. `WebringNav` recreates that footer widget faithfully: a teal-bordered inset panel announces membership in the **~\*~ Cool Devs Webring ~\*~**, whose heading blinks on a CSS animation loop just as it would have in 1997. Three bracket-wrapped navigation links — `[ Previous Site ]`, `[ Random Site ]`, and `[ Next Site ]` — sit in a centered row in `text-blue-600`, turning pink on hover. A smaller gray invitation line at the bottom nudges visitors to join the ring. All links point to `#` by default, ready for you to wire up to real URLs.
+
+## Props
+
+This component accepts no props. The webring name, all three navigation links, and the join invitation text are fully static. Drop the component into any page footer with no configuration required.
+
+<Note>
+  All `href` values are set to `'#'` in the source. Before publishing your site, replace them with real webring navigation URLs — your webring host will supply the Previous, Random, and Next link targets, typically as query-string URLs pointing to a central hub script.
+</Note>
+
+## Usage
+
+```jsx
+import { WebringNav } from './components/WebringNav';
+
+export default function Layout({ children }) {
+  return (
+    <>
+      <main>{children}</main>
+
+      <footer className="py-8">
+        {/* Webring panel centered in the page footer */}
+        <WebringNav />
+
+        <p className="text-center font-vt323 text-gray-400 mt-4 text-sm">
+          © 1997–{new Date().getFullYear()} My Awesome Homepage
+        </p>
+      </footer>
+    </>
+  );
+}
+```
+
+## Customization tips
+
+<Tip>
+  **Wiring up real links** — Replace the three `href="#"` anchors in the source with your actual webring navigation URLs. Most webring services provide a snippet like `https://webring.example.com/prev?id=YOUR_ID` for Previous, `.../next?id=YOUR_ID` for Next, and `.../random?id=YOUR_ID` for Random. Update the three `<a>` elements in `WebringNav.js` accordingly.
+</Tip>
+
+<Tip>
+  **Renaming the webring** — The webring name is the hardcoded string `~*~ Cool Devs Webring ~*~` inside an `<h3>` with `text-retro-pink` and `animate-blink`. Fork the component and swap that string — and the `text-2xl font-vt323` heading styles — to match whatever ring you actually belong to, or invent a fictional one for the portfolio's storytelling.
+</Tip>
+
+<Tip>
+  **Combining with other footer widgets** — `WebringNav` uses `w-full max-w-2xl mx-auto my-8` so it centers naturally. Pair it with a `VisitorCounter` or a `MarqueeBanner` above or below for an authentic multi-widget nineties footer stack. A `space-y-4` wrapper keeps the vertical rhythm consistent.
+</Tip>

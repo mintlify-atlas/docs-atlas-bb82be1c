@@ -1,0 +1,148 @@
+---
+title: "Projects Page: Windows Explorer File Directory"
+sidebarTitle: "Projects"
+description: "The Projects page renders a Windows Explorer-inspired file browser using FolderIcon entries inside a BeveledPanel with an inset variant title bar."
+---
+
+The Projects page (`/projects`) presents your portfolio as a Windows 95/98 file-manager window. A `BeveledPanel` using the `inset` variant provides the beveled chrome, and inside it a hand-crafted title bar (`C:\My Documents\Projects`) with minimize/maximize/close buttons sits above a column-header row and a list of `FolderIcon` entries — one per project. Each `FolderIcon` animates its folder icon on hover, and items flagged `isNew` display a blinking red `NEW` badge.
+
+## What It Renders
+
+The page is a plain `<div>` containing:
+
+1. **`<h1>` heading** — `"Cool Stuff I Made"` in `font-pixel text-retro-lime` with a pixel drop shadow.
+2. **Intro paragraph** — `font-sans text-sm` copy noting that some files may require WinZip.
+3. **`BeveledPanel` (`variant="inset"`, `className="bg-white"`)** — The file-browser chrome:
+   - **Title bar** — `bg-blue-800 text-white` bar showing `C:\My Documents\Projects` and three beveled control buttons (`_`, `□`, `X`).
+   - **Column headers** — `Name`, `Size`, `Modified` in `text-xs text-gray-500`.
+   - **`FolderIcon` list** — Four entries mapped from the `projects` array (see table below).
+   - **Status bar** — `4 object(s) | 19.6 MB` footer text.
+
+<Note>
+  The `projects` array is defined inline inside the component. To add, remove, or reorder projects, edit the array directly — there is no external data source.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="BeveledPanel (inset)" icon="window-maximize">
+    Using `variant="inset"` removes the inner re-bevel so the file-browser content sits flush. The title bar colour defaults to `bg-retro-teal`, but the Projects page overrides the bar manually with `bg-blue-800`. See the [BeveledPanel docs](/components/beveled-panel).
+  </Card>
+  <Card title="FolderIcon" icon="folder-open">
+    Renders a single animated folder row with a name, size, date, and optional `isNew` badge. Uses Framer Motion for the hover-lift animation on the document inside the folder.
+  </Card>
+</CardGroup>
+
+## Default Project Entries
+
+| Name | Size | Date Modified | isNew |
+|------|------|---------------|-------|
+| `E-Commerce_Platform.exe` | 14.2 MB | 10/24/2023 | ✅ |
+| `React_Dashboard_v2.zip` | 4.5 MB | 08/15/2023 | — |
+| `Portfolio_Site.html` | 128 KB | 05/02/2023 | — |
+| `Old_Geocities_Backup.tar.gz` | 890 KB | 11/14/2001 | — |
+
+## Customization Example
+
+Add a new project, update an existing file size, or remove the nostalgic backup entry:
+
+```jsx
+import BeveledPanel from "./components/BeveledPanel";
+import FolderIcon from "./components/FolderIcon";
+
+export default function Projects() {
+  // Edit this array to change, add, or remove project entries
+  const projects = [
+    {
+      name: "E-Commerce_Platform.exe",
+      size: "14.2 MB",
+      date: "10/24/2023",
+      isNew: true,         // shows the blinking red NEW badge
+    },
+    {
+      name: "React_Dashboard_v2.zip",
+      size: "4.5 MB",
+      date: "08/15/2023",
+    },
+    {
+      name: "Portfolio_Site.html",
+      size: "128 KB",
+      date: "05/02/2023",
+    },
+    {
+      name: "Old_Geocities_Backup.tar.gz",
+      size: "890 KB",
+      date: "11/14/2001",
+    },
+    // Add more entries here ↓
+    // { name: "New_Project.zip", size: "2.1 MB", date: "01/01/2025" },
+  ];
+
+  // Recalculate total size when you add entries
+  const totalSize = "19.6 MB";
+
+  return (
+    <div>
+      <h1 className="font-pixel text-2xl text-retro-lime mb-6 drop-shadow-[1px_1px_0px_#000]">
+        Cool Stuff I Made
+      </h1>
+      <p className="font-sans text-sm mb-6">
+        Welcome to my project directory. Click on a folder to view the source
+        code. (Note: Some files may require WinZip to extract).
+      </p>
+
+      <BeveledPanel variant="inset" className="bg-white">
+        {/* Windows Explorer title bar */}
+        <div className="bg-blue-800 text-white px-2 py-1 font-sans text-sm flex justify-between items-center mb-2">
+          <span>C:\My Documents\Projects</span>
+          <div className="flex gap-1">
+            <div className="w-4 h-4 bg-gray-200 text-black flex items-center justify-center text-xs bevel-outset">_</div>
+            <div className="w-4 h-4 bg-gray-200 text-black flex items-center justify-center text-xs bevel-outset">□</div>
+            <div className="w-4 h-4 bg-gray-200 text-black flex items-center justify-center text-xs bevel-outset">X</div>
+          </div>
+        </div>
+
+        {/* Column headers */}
+        <div className="flex text-xs font-sans text-gray-500 border-b border-gray-300 pb-1 mb-2 px-2">
+          <div className="flex-grow">Name</div>
+          <div className="w-16 text-right">Size</div>
+          <div className="w-24 text-right">Modified</div>
+        </div>
+
+        {/* File entries */}
+        <div className="flex flex-col gap-1">
+          {projects.map((project, i) => (
+            <FolderIcon key={i} {...project} />
+          ))}
+        </div>
+
+        {/* Status bar */}
+        <div className="mt-4 pt-2 border-t border-gray-300 text-xs font-sans text-gray-500 px-2">
+          {projects.length} object(s) | {totalSize}
+        </div>
+      </BeveledPanel>
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### `FolderIcon`
+
+<ParamField path="name" type="string" required>
+  The filename displayed as an underlined link in the `Name` column. Any string is valid — `.exe`, `.zip`, `.html`, `.tar.gz`, etc.
+</ParamField>
+<ParamField path="size" type="string" required>
+  Human-readable file size shown in the `Size` column (e.g. `"14.2 MB"`, `"128 KB"`). Formatted as a plain string — no automatic conversion is performed.
+</ParamField>
+<ParamField path="date" type="string" required>
+  Last-modified date shown in the `Modified` column. Expects `MM/DD/YYYY` format to match the Windows Explorer aesthetic.
+</ParamField>
+<ParamField path="isNew" type="boolean" default="false">
+  When `true`, appends a blinking red `NEW` badge (rendered in `font-pixel text-[10px]` via the `animate-blink` Tailwind keyframe) next to the filename.
+</ParamField>
+
+<Tip>
+  The hover animation lifts the document inside the folder using Framer Motion (`y: -8`, spring physics). No additional configuration is needed — it works automatically on mouse enter/leave.
+</Tip>

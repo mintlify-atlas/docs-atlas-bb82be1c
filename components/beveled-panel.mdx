@@ -1,0 +1,127 @@
+---
+title: 'BeveledPanel: Windows 98 Panel with Title Bar'
+sidebarTitle: 'BeveledPanel'
+description: 'BeveledPanel renders a Windows 98-style outset/inset bordered panel with an optional title bar, minimize/maximize/close buttons, and four color variants.'
+---
+
+`BeveledPanel` is the primary content container in Retro Webpage. It mimics the raised, beveled window frames of Windows 98 and Windows 95 — complete with an optional title bar, functioning-look minimize (`_`), maximize (`□`), and close (`X`) chrome buttons, and a white inset content area. Four colour variants let you match panels to the page's teal, pink, or neutral palette, while an `inset` variant flips the border direction for a sunken well effect.
+
+## Props
+
+<ParamField path="children" type="ReactNode" required>
+  Content rendered inside the panel's white content area (`p-2` padding). Accepts any valid React children — text, images, nested components, etc.
+</ParamField>
+
+<ParamField path="title" type="string">
+  Optional title string. When provided, a Windows 98-style title bar is rendered above the content area. The title bar background is `bg-retro-teal` for `default`, `teal`, and `inset` variants, and `bg-retro-pink` for the `pink` variant.
+</ParamField>
+
+<ParamField path="variant" type='"default" | "teal" | "pink" | "inset"' default='"default"'>
+  Controls the border bevel style applied to the outer panel wrapper:
+
+  | Value | CSS Class | Effect |
+  |---|---|---|
+  | `default` | `bevel-outset` | Raised outset border (standard Windows window frame) |
+  | `teal` | `bevel-teal` | Outset border with a teal accent |
+  | `pink` | `bevel-pink` | Outset border with a pink accent |
+  | `inset` | `bevel-inset` | Sunken inset border (inner well or depressed field) |
+</ParamField>
+
+<ParamField path="className" type="string" default='""'>
+  Optional additional class names merged onto the outer panel `<div>`. Use to control width, margin, grid placement, or any other layout concerns without modifying the component itself.
+</ParamField>
+
+## Variant Showcase
+
+<CodeGroup>
+
+```jsx Default
+<BeveledPanel title="My Homepage" variant="default">
+  <p className="font-vt323 text-lg">
+    Welcome to my page! Sign my guestbook below. 👇
+  </p>
+</BeveledPanel>
+```
+
+```jsx Teal
+<BeveledPanel title="About Me" variant="teal">
+  <p className="font-vt323 text-lg">
+    Hi! I'm a web developer who loves the 90s internet aesthetic.
+  </p>
+</BeveledPanel>
+```
+
+```jsx Pink
+<BeveledPanel title="My Favourite Links 💖" variant="pink">
+  <ul className="font-vt323 text-lg list-disc list-inside">
+    <li>Neopets</li>
+    <li>Hamster Dance</li>
+    <li>Space Jam Fan Site</li>
+  </ul>
+</BeveledPanel>
+```
+
+```jsx Inset
+<BeveledPanel title="Guestbook Entry" variant="inset">
+  <p className="font-vt323 text-lg italic text-gray-600">
+    "Best site on the internet! Come visit mine too!" — Webmaster99
+  </p>
+</BeveledPanel>
+```
+
+</CodeGroup>
+
+## Without a Title Bar
+
+Omitting the `title` prop renders a plain bordered panel with no chrome — useful for image frames, card grids, or decorative containers:
+
+```jsx
+<BeveledPanel variant="default" className="w-48">
+  <img src="/construction.gif" alt="Under Construction" className="w-full" />
+</BeveledPanel>
+```
+
+## DOM Structure
+
+When `title` is provided:
+
+```jsx
+<div className="p-1 mb-4 bevel-outset {className}">
+  {/* Title bar — teal for default/teal/inset, pink for pink variant */}
+  <div className="px-2 py-1 mb-2 font-vt323 text-xl text-white flex justify-between items-center bg-retro-teal">
+    <span>{title}</span>
+    <div className="flex gap-1">
+      <div className="w-4 h-4 bevel-outset bg-gray-200 ...">_</div>
+      <div className="w-4 h-4 bevel-outset bg-gray-200 ...">□</div>
+      <div className="w-4 h-4 bevel-outset bg-gray-200 ...">X</div>
+    </div>
+  </div>
+
+  {/* Content area */}
+  <div className="p-2 bg-white h-full">
+    {children}
+  </div>
+</div>
+```
+
+<Note>
+  The minimize, maximize, and close buttons are purely decorative — they render as `<div>` elements with `cursor-pointer` and a hover background change, but have no `onClick` handlers attached. They exist solely for visual authenticity.
+</Note>
+
+## CSS Classes
+
+| Class | Description |
+|---|---|
+| `bevel-outset` | Raised Windows 98-style border (light top-left, dark bottom-right) |
+| `bevel-teal` | Outset bevel with teal colour accent on the border highlights |
+| `bevel-pink` | Outset bevel with pink colour accent on the border highlights |
+| `bevel-inset` | Sunken inset border (dark top-left, light bottom-right) |
+| `p-1 mb-4` | Outer panel padding and bottom margin |
+| `bg-retro-teal` | Title bar background for `default`, `teal`, and `inset` variants |
+| `bg-retro-pink` | Title bar background for the `pink` variant |
+| `font-vt323` | VT323 monospace pixel font used in the title bar text |
+| `w-4 h-4` | Fixed 16 × 16 px size for each chrome button |
+
+<Tip>
+  Nest `BeveledPanel` components to create multi-pane layouts reminiscent of Windows Explorer. Use `variant="inset"` for the inner panels to contrast with an outer `variant="default"` frame.
+</Tip>

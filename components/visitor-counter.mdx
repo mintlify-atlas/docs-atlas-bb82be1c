@@ -1,0 +1,79 @@
+---
+title: 'VisitorCounter: Animated Hit Counter Display'
+sidebarTitle: 'VisitorCounter'
+description: 'VisitorCounter shows a green-on-black LCD digit display that counts up from 1336 to 1337 on mount, simulating the classic 90s website hit counter.'
+---
+
+Every self-respecting GeoCities page sported a hit counter in the footer — a proud declaration of internet fame measured in four-digit numbers. `VisitorCounter` recreates that experience with individual LCD-style digit tiles rendered in green VT323 font on a black background. One second after mount, the count ticks from `001336` to `001337`, simulating the arrival of a new visitor (you!) in real time.
+
+## Props
+
+`VisitorCounter` accepts no props. The initial count and increment logic are baked into the component.
+
+<Note>
+  The counter always starts at `1336` and transitions to `1337` after a 1-second `setTimeout`. This is intentional: the joke is that your page just hit 1337 (leet) visitors — a classic internet Easter egg.
+</Note>
+
+## Usage
+
+<CodeGroup>
+```jsx Basic
+import VisitorCounter from './components/VisitorCounter';
+
+export default function Footer() {
+  return (
+    <footer className="flex flex-col items-center py-4">
+      <VisitorCounter />
+    </footer>
+  );
+}
+```
+
+```jsx Embedded in a sidebar widget
+import VisitorCounter from './components/VisitorCounter';
+
+export default function RetroSidebar() {
+  return (
+    <aside className="flex flex-col items-center gap-6 p-4">
+      <p className="font-pixel text-xs text-gray-600">Est. 1999</p>
+      <VisitorCounter />
+      <p className="font-pixel text-xs text-gray-400">thanks for visiting!!</p>
+    </aside>
+  );
+}
+```
+</CodeGroup>
+
+## Behavior & Animation
+
+**Digit rendering** — The current count is converted to a string, left-padded with zeroes to 6 characters (e.g. `"001337"`), then split into individual characters. Each digit is rendered as its own `w-6 h-8` `<div>` styled with:
+- `bg-black` background
+- `text-retro-lime` (`#bef264`) text color via the VT323 font family
+- A subtle `border border-gray-800` separator between digits
+- The parent row uses `bevel-inset` to give the display a recessed LCD-panel appearance
+
+**Tick animation** — On mount, a `setTimeout` of 1000 ms fires a `setState` call that bumps the count from `1336` to `1337`. React re-renders only the digit tile that changed (`6` → `7`), creating a satisfying single-digit flip effect without any additional animation library.
+
+**Cleanup** — The `useEffect` returns the `clearTimeout` handle, so the timer is safely cancelled if the component unmounts before the second elapses (e.g. during fast navigation).
+
+<Note>
+  The label `"YOU ARE VISITOR NO."` above the counter uses the `font-pixel` Tailwind utility. Make sure your Tailwind config maps `font-pixel` to a suitable bitmap/pixel font for the full retro effect.
+</Note>
+
+## Customization Tips
+
+<Tip>
+  **Change the starting count** — Replace the two `useState(1336)` / `setState(1337)` literals with any pair of numbers to set your own "base count" and increment. For a larger site, start at something like `98432` / `98433`.
+</Tip>
+
+<Tip>
+  **Display more digits** — The `padStart(6, '0')` call controls digit width. Change `6` to `8` for an 8-digit counter (up to 99,999,999 visitors — very popular site).
+</Tip>
+
+<Tip>
+  **Persist the count** — Read an initial value from `localStorage` in the `useState` initializer and write back after each increment to give returning visitors an ever-growing number across sessions.
+</Tip>
+
+<Tip>
+  **Animate the flip** — Wrap each digit tile in a Framer Motion `motion.div` with a `y`-axis key-frame to achieve a retro flip-clock transition whenever the digit value changes.
+</Tip>

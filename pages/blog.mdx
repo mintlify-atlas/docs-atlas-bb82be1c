@@ -1,0 +1,128 @@
+---
+title: "Blog Page: Diary-style Mood Entry Posts"
+sidebarTitle: "Blog"
+description: "The Blog page (The Diary) displays MoodEntry components with post title, date, mood indicator, now-playing music, and freeform HTML content."
+---
+
+The Blog page (`/blog`) is titled **The Diary** and renders a chronological list of `MoodEntry` components, each one styled like a Livejournal or Xanga post from the early 2000s. Every entry has a purple title bar, a white content body, and a pastel footer strip that displays the author's current mood and the track they're listening to — the quintessential 2003 blog metadata.
+
+## What It Renders
+
+The page is a `max-w-2xl mx-auto` centered column containing:
+
+1. **`<h1>` heading** — `"The Diary"` in `font-pixel text-red-500` centered.
+2. **Two `MoodEntry` components**, stacked vertically with `mb-8` spacing:
+   - **Entry 1** — `"Why is CSS so hard?"` (Nov 14, 2023 @ 11:42 PM, mood: Frustrated, music: Linkin Park - In The End)
+   - **Entry 2** — `"Finally got it working!!!"` (Nov 12, 2023 @ 02:15 AM, mood: Ecstatic, music: Daft Punk - Harder, Better, Faster, Stronger)
+
+### `MoodEntry` Layout
+
+Each `MoodEntry` renders three stacked regions:
+
+| Region | Background | Content |
+|--------|-----------|---------|
+| Title bar | `bg-[#9999cc]` (dusty purple) | Post title (left) + date (right) in white |
+| Content body | `bg-white p-4` | Freeform `children` JSX — paragraphs, images, lists |
+| Footer strip | `bg-[#f0f0f8]` | `Current Mood:` + `(-_-)` emoji · `Now Playing:` + `♫` emoji |
+
+<Note>
+  The `content` prop accepts any ReactNode — you can pass raw `<p>` tags, `<img>` elements, or even nested components. The blog uses `React.Fragment` wrappers with multiple `<p>` children.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="MoodEntry" icon="book-open">
+    A self-contained post card with a purple title bar, white content body, and a pastel footer for mood and now-playing metadata. Accepts `title`, `date`, `mood`, `music`, and a freeform `content` ReactNode.
+  </Card>
+  <Card title="Content Body" icon="paragraph">
+    The `content` prop renders inside a `bg-white p-4 font-sans text-sm leading-relaxed` div. Pass a `React.Fragment` with multiple `<p>` tags for multi-paragraph entries, or any other valid JSX.
+  </Card>
+</CardGroup>
+
+## Customization Example
+
+Add a new entry or edit the mood/music metadata on existing posts:
+
+```jsx
+import MoodEntry from "./components/MoodEntry";
+
+export default function Blog() {
+  return (
+    <div className="max-w-2xl mx-auto">
+      <h1 className="font-pixel text-2xl text-red-500 mb-8 text-center">
+        The Diary
+      </h1>
+
+      {/* Most recent post first */}
+      <MoodEntry
+        title="Why is CSS so hard?"
+        date="Nov 14, 2023 @ 11:42 PM"
+        mood="Frustrated"
+        music="Linkin Park - In The End"
+        content={
+          <>
+            <p className="mb-2">
+              Spent 4 hours today trying to center a div. I thought Flexbox was
+              supposed to fix this? Sometimes I miss the days when we just used
+              tables for everything. It was ugly, but at least you knew where
+              things were going to end up.
+            </p>
+            <p>
+              Anyway, going to grab a Hot Pocket and try again. Wish me luck.
+            </p>
+          </>
+        }
+      />
+
+      <MoodEntry
+        title="Finally got it working!!!"
+        date="Nov 12, 2023 @ 02:15 AM"
+        mood="Ecstatic"
+        music="Daft Punk - Harder, Better, Faster, Stronger"
+        content={
+          <p>
+            OMG I finally fixed that weird bug in the authentication flow!
+            Turns out I was mutating state directly. Rookie mistake, I know.
+            But seeing that green success message pop up was the best feeling
+            ever.
+          </p>
+        }
+      />
+
+      {/* Add a new entry ↓ */}
+      {/* <MoodEntry
+        title="Discovered Tailwind CSS"
+        date="Jan 03, 2024 @ 09:30 AM"
+        mood="Amazed"
+        music="Fatboy Slim - Right Here, Right Now"
+        content={<p>I can't believe I was writing raw CSS this whole time.</p>}
+      /> */}
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### `MoodEntry`
+
+<ParamField path="title" type="string" required>
+  The post title displayed on the left side of the purple title bar in `font-sans font-bold`.
+</ParamField>
+<ParamField path="date" type="string" required>
+  The post timestamp displayed on the right side of the title bar in `text-sm font-normal`. Free-form string — use any format, e.g. `"Nov 14, 2023 @ 11:42 PM"`.
+</ParamField>
+<ParamField path="mood" type="string" required>
+  The author's current emotional state. Displayed in the footer strip after the label `Current Mood:`, followed by the `(-_-)` emoticon.
+</ParamField>
+<ParamField path="music" type="string" required>
+  The track currently playing. Displayed in the footer strip after the label `Now Playing:`, followed by the `♫` symbol. Format as `"Artist - Track Name"`.
+</ParamField>
+<ParamField path="content" type="ReactNode" required>
+  The main post body rendered inside the white `bg-white p-4 font-sans text-sm leading-relaxed` content area. Accepts any JSX — paragraphs, images, blockquotes, etc.
+</ParamField>
+
+<Tip>
+  Entries are rendered in the order they appear in the JSX. To show posts in reverse-chronological order (newest first), simply place the most recent `MoodEntry` first in the markup.
+</Tip>

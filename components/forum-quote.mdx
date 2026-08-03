@@ -1,0 +1,69 @@
+---
+title: 'ForumQuote: phpBB 2.x Forum Post Layout'
+sidebarTitle: 'ForumQuote'
+description: 'ForumQuote renders a faithful phpBB 2-style forum post with a username sidebar, no-avatar placeholder, quoted content block, and a hardcoded binary signature.'
+---
+
+Before Twitter threads and Hacker News, community discourse lived inside phpBB 2 forums — each post a miniature identity card bolted to the left of your reply, the whole thing framed in that unmistakable `#006699` steel-blue. `ForumQuote` reconstructs the layout pixel for pixel: a header bar carrying the post date and subject, a left sidebar with the poster's username, role badge, a "No Avatar" placeholder box, a hardcoded post count of 42, and a join year of 2001, plus a right content panel that wraps the supplied text in an inline blockquote. The reply body is always "QFT. Highly recommended." and every post closes with the classic binary joke signature — `"There are 10 types of people in the world…"` — separated by a dotted rule.
+
+## Props
+
+<ParamField path="author" type="string" required>
+  The forum username displayed in bold `#006699` text at the top of the left sidebar and again as the attribution inside the quoted blockquote.
+</ParamField>
+
+<ParamField path="role" type="string" required>
+  The member rank shown beneath the username (e.g. `'Administrator'`, `'Senior Member'`, `'Lurker'`).
+</ParamField>
+
+<ParamField path="date" type="string" required>
+  Post timestamp string rendered verbatim in the blue header bar (e.g. `'Mon Oct 23, 2023 4:17 pm'`).
+</ParamField>
+
+<ParamField path="content" type="string" required>
+  The text that appears inside the quoted blockquote. It is wrapped in double curly-quotes and displayed in italic gray within the white quote box.
+</ParamField>
+
+<Note>
+  Several fields are intentionally hardcoded to reinforce the retro aesthetic: Posts is always **42**, Joined is always **2001**, and the post subject is always **"Re: Working with this dev"**. To display real testimonials, vary only `author`, `role`, `date`, and `content`.
+</Note>
+
+## Usage
+
+```jsx
+import { ForumQuote } from './components/ForumQuote';
+
+export default function Testimonials() {
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      <ForumQuote
+        author="x_shadow_coder_x"
+        role="Administrator"
+        date="Mon Oct 23, 2023 4:17 pm"
+        content="Delivered the project two weeks early and the code was immaculate. Would hire again in a heartbeat."
+      />
+
+      <ForumQuote
+        author="webmaster_jen"
+        role="Senior Member"
+        date="Tue Nov 07, 2023 9:02 am"
+        content="Best developer I've collaborated with. Responsive, thorough, and actually reads the brief."
+      />
+    </div>
+  );
+}
+```
+
+## Customization tips
+
+<Tip>
+  **Theming the header bar** — The `#006699` color is applied via Tailwind's arbitrary-value syntax (`bg-[#006699]`). Swap it for `bg-[#660000]` (classic red-forum style) or `bg-[#336600]` (old-school green board) to give the testimonials section a different retro flavor without touching the layout.
+</Tip>
+
+<Tip>
+  **Making post count and join year dynamic** — The sidebar stats are static strings in the source. If you want each testimonial to show real metadata, fork `ForumQuote` and add optional `postCount` and `joinedYear` props with defaults of `42` and `2001` to keep the retro fallback intact.
+</Tip>
+
+<Tip>
+  **Using `ForumQuote` as a review card** — The component maps naturally onto a testimonials or references section. Pass the reviewer's name as `author`, their job title as `role`, the review date as `date`, and the testimonial text as `content`. The hardcoded "QFT. Highly recommended." reply doubles as social proof for every entry.
+</Tip>

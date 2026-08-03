@@ -1,0 +1,143 @@
+---
+title: 'Add and Configure Routes in Retro Webpage'
+sidebarTitle: 'Routing'
+description: 'Retro Webpage uses React Router v6 HashRouter with nine pre-built routes. Learn how to add pages, modify nav links, and understand hash-based URLs.'
+---
+
+Retro Webpage uses **React Router v6** with a `HashRouter` for all client-side navigation. Because `HashRouter` encodes the active route in the URL's `#` fragment (for example, `https://yoursite.com/#/about`), the browser never sends the path portion to the server. This means the entire app is served from a single `index.html` entry point and routing is handled entirely in JavaScript — making it a perfect fit for static hosts like GitHub Pages with no extra server configuration required.
+
+## Existing Routes
+
+The router is defined inside `main.js` and mounts nine routes, each mapping a URL path to a React page component:
+
+```jsx
+<HashRouter>
+  <Routes>
+    <Route path="/"            element={<Home />} />
+    <Route path="/about"       element={<About />} />
+    <Route path="/projects"    element={<Projects />} />
+    <Route path="/skills"      element={<Skills />} />
+    <Route path="/work"        element={<Work />} />
+    <Route path="/case-studies" element={<CaseStudies />} />
+    <Route path="/blog"        element={<Blog />} />
+    <Route path="/testimonials" element={<Testimonials />} />
+    <Route path="/contact"     element={<GuestbookPage />} />
+  </Routes>
+</HashRouter>
+```
+
+| Path | Component | Nav label |
+|---|---|---|
+| `/` | `Home` | Home |
+| `/about` | `About` | About |
+| `/projects` | `Projects` | Projects |
+| `/skills` | `Skills` | Skills |
+| `/work` | `Work` | Work |
+| `/case-studies` | `CaseStudies` | Case Studies |
+| `/blog` | `Blog` | Blog |
+| `/testimonials` | `Testimonials` | Testimonials |
+| `/contact` | `GuestbookPage` | Contact |
+
+## Adding a New Page
+
+Follow these four steps to add a new route to the site. Because the app is compiled by Vite, you must rebuild after making source changes.
+
+<Steps>
+  <Step title="Create a new page component">
+    Define a new React component function in the source. Place it alongside the other page components in `main.js` (or in a dedicated file that you then import). The component should return JSX that represents your page content.
+
+    ```jsx
+    // A simple "Links" page component
+    const Links = () => (
+      <div>
+        <h1 className="font-pixel text-2xl text-retro-teal mb-6">
+          Cool Links
+        </h1>
+        <ul className="font-sans text-sm space-y-2">
+          <li><a href="https://example.com" className="text-blue-600 underline">Example Site</a></li>
+          <li><a href="https://geocities.ws" className="text-blue-600 underline">GeoCities Archive</a></li>
+        </ul>
+      </div>
+    );
+    ```
+  </Step>
+
+  <Step title="Add the route to the router">
+    Register the new component by adding a `<Route>` inside the `<Routes>` block in `main.js`:
+
+    ```jsx
+    <HashRouter>
+      <Routes>
+        {/* ... existing routes ... */}
+        <Route path="/links" element={<Links />} />
+      </Routes>
+    </HashRouter>
+    ```
+
+    The path you choose here becomes the hash fragment used in the URL: `https://yoursite.com/#/links`.
+  </Step>
+
+  <Step title="Add a nav link in the Layout">
+    The site's navigation is rendered by the `Layout` component. To surface your new page in the nav bar, add a link entry alongside the existing items. Since the app uses `HashRouter`, links follow the `#/path` pattern:
+
+    ```jsx
+    // Inside Layout.js — nav link list
+    <a href="#/links" className="nav-link">Links</a>
+    ```
+
+    If the Layout uses React Router's `<Link>` component, use `to="/links"` instead:
+
+    ```jsx
+    <Link to="/links" className="nav-link">Links</Link>
+    ```
+  </Step>
+
+  <Step title="Optionally add an HTML shell file under pages/">
+    Each existing route has a corresponding HTML shell under `pages/` (e.g., `pages/About.html`). These files exist so that a user who bookmarks or is linked to `pages/links.html` directly can still load the app. The shell sets the correct starting hash via an inline script, then loads `assets/main.js`.
+
+    Create `pages/links.html` following the same pattern as `pages/About.html`:
+
+    ```html
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Links | retro-webpage</title>
+        <script type="module" crossorigin src="../assets/main.js"></script>
+        <link rel="stylesheet" crossorigin href="../assets/main.css">
+        <script>
+          window.__STATIC_PAGE_ROUTE__ = "/links";
+          if (!window.location.hash || window.location.hash === "#/" || window.location.hash === "#") {
+            window.location.hash = "/links";
+          }
+        </script>
+      </head>
+      <body>
+        <div id="root"></div>
+      </body>
+    </html>
+    ```
+
+    Note the `../` prefix on asset paths — shell files sit one directory deeper than `index.html`.
+  </Step>
+</Steps>
+
+## HashRouter vs BrowserRouter
+
+Retro Webpage deliberately uses `HashRouter` rather than `BrowserRouter`. Here is how they compare:
+
+| | `HashRouter` | `BrowserRouter` |
+|---|---|---|
+| **URL style** | `example.com/#/about` | `example.com/about` |
+| **Server config required** | ❌ None | ✅ Must serve `index.html` for all paths |
+| **Works on GitHub Pages** | ✅ Out of the box | ⚠️ Needs workaround |
+| **Works on Netlify / Vercel** | ✅ Out of the box | ✅ With a `_redirects` or `vercel.json` rule |
+| **SEO / link previews** | ⚠️ Hash URLs are less readable | ✅ Clean URLs |
+
+For a personal portfolio deployed to a static host, `HashRouter` is the lower-friction choice. If you later move to a platform that supports redirect rules (Netlify, Vercel, a custom server), you can swap `HashRouter` for `BrowserRouter` in `main.js` without changing any route definitions.
+
+<Warning>
+  Retro Webpage's source files are **compiled by Vite** before deployment — the files in `assets/main.js` and `assets/main.css` in the `dist/` folder are the bundled output, not the raw source. Any changes to routes, components, or the Layout nav must be made in the source files and then rebuilt with `npm run build` before the changes take effect on your live site. Run `npm run dev` during development to see changes with hot module replacement.
+</Warning>

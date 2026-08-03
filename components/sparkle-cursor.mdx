@@ -1,0 +1,107 @@
+---
+title: 'SparkleCursor: Animated Mouse Trail Effect'
+sidebarTitle: 'SparkleCursor'
+description: 'SparkleCursor adds a Framer Motion sparkle trail to the mouse cursor, spawning colored SVG stars that fade and rotate as the user moves the pointer.'
+---
+
+Before CSS custom cursors were mainstream, GeoCities webmasters discovered the magic of JavaScript mouse trails — glowing particles that followed your every move and made visitors feel like they'd stumbled into a wizard's lair. `SparkleCursor` brings that magic back using Framer Motion's `AnimatePresence`, spawning up to 15 colored SVG star particles that swoop, fade, and rotate behind the cursor as it glides across the screen.
+
+## Props
+
+`SparkleCursor` accepts no props. Sparkle colors, timing, and limits are all configured internally.
+
+<Note>
+  The component renders a fixed, `pointer-events-none` overlay that covers the entire viewport (`fixed inset-0 z-50`). It will not interfere with clicks or hover states on any underlying element.
+</Note>
+
+## Usage
+
+<CodeGroup>
+```jsx Mount once at the app root
+import SparkleCursor from './components/SparkleCursor';
+
+export default function App() {
+  return (
+    <>
+      <SparkleCursor />
+      <main>{/* rest of your page */}</main>
+    </>
+  );
+}
+```
+
+```jsx Toggled by a settings switch
+import { useState } from 'react';
+import SparkleCursor from './components/SparkleCursor';
+
+export default function App() {
+  const [sparkles, setSparkles] = useState(true);
+
+  return (
+    <>
+      {sparkles && <SparkleCursor />}
+      <button onClick={() => setSparkles(s => !s)}>
+        {sparkles ? 'Disable' : 'Enable'} Sparkles ✨
+      </button>
+      <main>{/* page content */}</main>
+    </>
+  );
+}
+```
+</CodeGroup>
+
+## Behavior & Animation
+
+**Event throttling** — A `mousemove` listener is registered on `window` inside a `useEffect`. Sparkle creation is throttled to one sparkle per **50 ms** using a timestamp comparison, preventing the array from flooding during fast mouse sweeps.
+
+**Sparkle objects** — Each sparkle is a plain object `{ id, x, y, color }`:
+- `id` — auto-incrementing integer used as the Framer Motion key
+- `x` / `y` — `clientX` / `clientY` from the mouse event (viewport coordinates)
+- `color` — randomly chosen from the four-color palette: `#06b6d4` (cyan), `#ec4899` (pink), `#bef264` (lime), `#fbbf24` (amber)
+
+**Array management** — The sparkle array is capped at **15 entries** via `slice(-15)`. Older sparkles are evicted naturally as new ones are appended, keeping the array bounded without a manual cleanup loop.
+
+**Framer Motion animation** — Each sparkle is a `motion.div` wrapped in `AnimatePresence`:
+
+| Stage | `opacity` | `scale` | `y` | `rotate` |
+|---|---|---|---|---|
+| `initial` | `1` | `0.5` | cursor y | `0°` |
+| `animate` | `0` | `1.5` | cursor y + 20 px | `90°` |
+| `exit` | `0` | — | — | — |
+
+The transition runs for **0.8 s** with an `easeOut` curve, giving sparkles a natural deceleration as they drift downward and fade.
+
+**SVG star shape** — Each sparkle renders a 20×20 px SVG containing a single `<path>` with an 8-pointed star:
+
+```jsx
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  <path
+    d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"
+    fill={color}
+  />
+</svg>
+```
+
+The `motion.div` is positioned absolutely with `left: -10; top: -10` to center the 20 px star on the exact cursor coordinate.
+
+<Note>
+  `SparkleCursor` depends on **Framer Motion** (`motion`, `AnimatePresence`). Ensure `framer-motion` is listed in your `package.json` dependencies before using this component.
+</Note>
+
+## Customization Tips
+
+<Tip>
+  **Change sparkle colors** — Edit the `P` array (exported as the color palette constant) inside the component file. Add as many hex values as you like; one is picked at random per sparkle.
+</Tip>
+
+<Tip>
+  **Increase or decrease trail length** — The `slice(-15)` cap controls how many sparkles exist simultaneously. Lower it (e.g. `-8`) for a shorter, subtler trail; raise it (e.g. `-30`) for a dense comet-tail effect.
+</Tip>
+
+<Tip>
+  **Speed up or slow down the fade** — Change the `duration: 0.8` value in the `transition` prop to adjust how quickly each star disappears. A value of `0.4` produces a crisp, sharp pop; `1.5` creates a long lingering trail.
+</Tip>
+
+<Tip>
+  **Swap the SVG shape** — Replace the `<path>` `d` attribute with any SVG path data — a heart (`♥`), lightning bolt, or pixel art shape — to theme the cursor trail to your site's personality.
+</Tip>

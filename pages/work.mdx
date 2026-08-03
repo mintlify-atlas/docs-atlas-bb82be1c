@@ -1,0 +1,159 @@
+---
+title: "Work Page: HTML Table-Style Résumé Layout"
+sidebarTitle: "Work"
+description: "The Work page renders a styled HTML table résumé listing companies, roles, timelines, and descriptions in a classic spreadsheet-era format."
+---
+
+The Work page (`/work`) renders your employment history as an authentic-looking HTML table résumé — the kind a 1990s Webmaster would have proudly hand-coded in Notepad. The table sits inside a `bevel-outset` container with an orange-tinted header row and alternating white/orange-tinted body rows. A "Download Resume as PDF" link at the bottom completes the period-accurate look.
+
+## What It Renders
+
+The page is a plain `<div>` containing:
+
+1. **`<h1>` heading** — `"Resume.html"` in `font-pixel text-orange-500` centered.
+2. **`bevel-outset` wrapper** — A `bg-gray-200 p-2` container that gives the table the classic raised-panel look.
+3. **Résumé `<table>`** — `border-collapse border-2 border-gray-400 bg-white font-sans text-sm`:
+   - **`<thead>`** — `bg-orange-200` header row with four column labels: Company, Role / Title, Timeline, Description.
+   - **`<tbody>`** — Three job rows, alternating between `bg-white` and `bg-orange-50`. Each row contains:
+     - **Company** — `font-bold text-orange-800` with a small orange pixel icon `<div>`.
+     - **Role / Title** — `italic`.
+     - **Timeline** — `font-vt323 text-lg text-center`.
+     - **Description** — plain body copy.
+4. **Download link** — `font-sans text-sm text-blue-600 underline hover:text-orange-500` reading `[ Download Resume as PDF (Acrobat Reader Required) ]`.
+
+<Note>
+  The job entries are defined in a `jobs` array inside the component. Edit that array to add, remove, or reorder positions — the table rows are fully generated from it.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="bevel-outset wrapper" icon="table-columns">
+    The table sits inside a `bevel-outset bg-gray-200 p-2` container that gives it the raised Windows 98 panel appearance. This is a Tailwind utility class defined in the project's global CSS — no React component required.
+  </Card>
+  <Card title="Résumé Table" icon="table">
+    A native `<table>` with a two-row `<thead>` and a `<tbody>` driven by the `jobs` array. Rows alternate between `bg-white` and `bg-orange-50` using `i % 2 === 0`.
+  </Card>
+</CardGroup>
+
+## Default Job Entries
+
+| Company | Role / Title | Timeline | Description |
+|---------|-------------|----------|-------------|
+| TechCorp Inc. | Senior Frontend Developer | 2020 – Present | Modernized legacy apps with React/TypeScript. Improved performance by 40%. |
+| WebSolutions LLC | Web Developer | 2016 – 2020 | Built responsive client sites. Managed CMS integrations and DB migrations. |
+| Freelance | Webmaster | 2014 – 2016 | Designed and hosted sites for local businesses. Hand-coded HTML/CSS. |
+
+## Customization Example
+
+Add new roles or update existing entries by editing the `jobs` array:
+
+```jsx
+export default function Work() {
+  // Edit this array to update your work history
+  const jobs = [
+    {
+      company: "TechCorp Inc.",
+      role: "Senior Frontend Developer",
+      years: "2020 - Present",
+      desc: "Modernized legacy applications using React and TypeScript. Improved performance by 40%.",
+    },
+    {
+      company: "WebSolutions LLC",
+      role: "Web Developer",
+      years: "2016 - 2020",
+      desc: "Built responsive websites for clients. Managed CMS integrations and database migrations.",
+    },
+    {
+      company: "Freelance",
+      role: "Webmaster",
+      years: "2014 - 2016",
+      desc: "Designed and hosted websites for local businesses. Hand-coded HTML/CSS.",
+    },
+    // Add a new role ↓
+    // {
+    //   company: "StartupXYZ",
+    //   role: "Junior Developer",
+    //   years: "2012 - 2014",
+    //   desc: "Built internal tooling and maintained legacy PHP applications.",
+    // },
+  ];
+
+  return (
+    <div>
+      <h1 className="font-pixel text-2xl text-orange-500 mb-6 text-center">
+        Resume.html
+      </h1>
+
+      <div className="bevel-outset bg-gray-200 p-2">
+        <table className="w-full border-collapse border-2 border-gray-400 bg-white font-sans text-sm">
+          <thead>
+            <tr className="bg-orange-200 border-b-2 border-gray-400">
+              <th className="p-2 border-r-2 border-gray-400 text-left w-1/4">Company</th>
+              <th className="p-2 border-r-2 border-gray-400 text-left w-1/4">Role / Title</th>
+              <th className="p-2 border-r-2 border-gray-400 text-left w-1/6">Timeline</th>
+              <th className="p-2 text-left">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {jobs.map((job, i) => (
+              <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-orange-50"}>
+                {/* Company cell with pixel icon */}
+                <td className="p-3 border-r-2 border-b-2 border-gray-400 font-bold text-orange-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-orange-500 border border-black pixelated-icon" />
+                    {job.company}
+                  </div>
+                </td>
+                <td className="p-3 border-r-2 border-b-2 border-gray-400 italic">
+                  {job.role}
+                </td>
+                {/* Timeline uses retro VT323 font */}
+                <td className="p-3 border-r-2 border-b-2 border-gray-400 font-vt323 text-lg text-center">
+                  {job.years}
+                </td>
+                <td className="p-3 border-b-2 border-gray-400">
+                  {job.desc}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Update the href to point to your real PDF */}
+      <div className="mt-4 text-center">
+        <a
+          href="#"
+          className="font-sans text-sm text-blue-600 underline hover:text-orange-500"
+        >
+          [ Download Resume as PDF (Acrobat Reader Required) ]
+        </a>
+      </div>
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### Job Entry Fields
+
+Each object in the `jobs` array drives one `<tr>` in the résumé table.
+
+<ParamField path="company" type="string" required>
+  Company or organisation name. Rendered in `font-bold text-orange-800` alongside a small orange pixel icon in the first column.
+</ParamField>
+<ParamField path="role" type="string" required>
+  Job title or role. Rendered in `italic` in the second column.
+</ParamField>
+<ParamField path="years" type="string" required>
+  Date range, e.g. `"2020 - Present"` or `"2016 - 2020"`. Rendered in `font-vt323 text-lg text-center` in the Timeline column.
+</ParamField>
+<ParamField path="desc" type="string" required>
+  One or two sentences describing your responsibilities or achievements. Rendered as plain body text in the Description column.
+</ParamField>
+
+<Tip>
+  Row striping is applied automatically: even-indexed rows use `bg-white`, odd-indexed rows use `bg-orange-50`. Adding more rows to the array maintains the alternating pattern without any extra configuration.
+</Tip>

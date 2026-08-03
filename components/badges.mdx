@@ -1,0 +1,117 @@
+---
+title: 'UnderConstruction and NEW Badge Components'
+sidebarTitle: 'Badges'
+description: 'UnderConstruction renders a blinking caution banner with animated stripes. The inline NEW badge in FolderIcon flags recently added entries with a red pixel label.'
+---
+
+Two of the most iconic visual signals from the GeoCities era were the animated "Under Construction" banner — a staple on literally every page that hadn't been finished since 1996 — and the blinking red "NEW!" sticker slapped next to any recently updated link. The retro template ships both: `UnderConstruction` as a standalone no-props component you drop anywhere a section isn't ready, and the inline `NEW` badge baked directly into `FolderIcon` via its `isNew` prop. Together they give you the full vocabulary of nineties web status communication.
+
+---
+
+## UnderConstruction
+
+`UnderConstruction` renders a full-width yellow caution banner with diagonal hazard stripes across the top and bottom edges, a centered wrench icon, a blinking pixel-font headline, and an apologetic Comic Neue subline. It accepts no props.
+
+### Props
+
+This component accepts no props. All copy and styling are static. Place it on any page or section that is still in progress.
+
+<Note>
+  The caution stripes use a `bg-caution` Tailwind utility defined in the project's `tailwind.config.js`. If you are using `UnderConstruction` outside this template, ensure `bg-caution` is configured or replace it with a custom `background-image` diagonal stripe CSS pattern.
+</Note>
+
+### Usage
+
+```jsx
+import { UnderConstruction } from './components/UnderConstruction';
+
+export default function CaseStudiesPage() {
+  return (
+    <div className="max-w-2xl mx-auto">
+      <h1 className="font-pixel text-2xl text-retro-teal mb-6">
+        Case Studies
+      </h1>
+
+      {/* Banner shown while the section is being built */}
+      <UnderConstruction />
+
+      <p className="font-comic text-sm text-gray-500 mt-4 text-center">
+        Check back soon — projects incoming!
+      </p>
+    </div>
+  );
+}
+```
+
+The component renders the following structure when dropped into any layout:
+
+- **Top stripe** — full-width `h-4` `bg-caution` diagonal hazard band
+- **Body row** — wrench SVG icon (48×48, `text-yellow-600`) · centered text block · mirrored wrench SVG
+- **Headline** — `"UNDER CONSTRUCTION"` in `font-pixel text-sm text-yellow-800 animate-blink`
+- **Subline** — `"Please excuse the dust! I'm still learning HTML."` in `font-comic text-sm text-yellow-700`
+- **Bottom stripe** — full-width `h-4` `bg-caution` diagonal hazard band
+
+### Customization tips
+
+<Tip>
+  **Swapping the copy** — The two text strings (`"UNDER CONSTRUCTION"` and `"Please excuse the dust! I'm still learning HTML."`) are hardcoded. Fork the component and accept optional `headline` and `subline` props to make the banner reusable across different sections with different in-progress messages.
+</Tip>
+
+<Tip>
+  **Controlling blink speed** — The `animate-blink` class is driven by a Tailwind keyframe defined in `tailwind.config.js`. Adjust the animation duration there (e.g. `'blink': { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0 } }` with a custom `1s` or `0.5s` timing) to make the headline pulse faster or slower across the whole site.
+</Tip>
+
+---
+
+## Inline NEW Badge (via FolderIcon)
+
+The `NEW` badge is not a standalone component — it lives inside `FolderIcon` and is rendered inline whenever `isNew={true}` is passed. The badge itself is a single `<span>` with the following classes:
+
+```jsx
+<span className="ml-2 px-1 bg-red-500 text-white text-[10px] font-pixel animate-blink">
+  NEW
+</span>
+```
+
+It appears immediately after the filename label in the folder row, offset by `ml-2` and rendered in the project's `font-pixel` face at 10 px. Like `UnderConstruction`'s headline, it uses `animate-blink` to flash on and off.
+
+### Usage
+
+```jsx
+import { FolderIcon } from './components/FolderIcon';
+
+export default function FileList() {
+  return (
+    <div className="max-w-lg">
+      {/* Badge visible — file flagged as new */}
+      <FolderIcon
+        name="open-source-projects"
+        size="8.4 MB"
+        date="11/01/2023"
+        isNew={true}
+      />
+
+      {/* No badge — isNew omitted (defaults to false) */}
+      <FolderIcon
+        name="archived-work-2019"
+        size="1.2 GB"
+        date="03/11/2019"
+      />
+    </div>
+  );
+}
+```
+
+<Note>
+  `isNew` is the only prop that controls the badge. There is no way to change the badge text, color, or position without editing `FolderIcon`'s source. The badge is always the string `"NEW"` in `bg-red-500` white text.
+</Note>
+
+### Customization tips
+
+<Tip>
+  **Automating badge logic** — Because `isNew` is a plain boolean, you can compute it from real data. Compare each entry's `date` prop against today using a helper like `isWithinDays(date, 14)` and pass the result as `isNew` to automatically badge anything added within the last two weeks — no manual flag management needed.
+</Tip>
+
+<Tip>
+  **Adding a UPDATED badge variant** — The current implementation only supports `NEW`. To add an `UPDATED` variant, fork `FolderIcon` and replace the boolean `isNew` with a string enum prop (`badge?: 'new' | 'updated' | null`), then render different background colors (`bg-red-500` for new, `bg-blue-500` for updated) based on the value.
+</Tip>

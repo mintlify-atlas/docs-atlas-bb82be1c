@@ -1,0 +1,77 @@
+---
+title: 'FolderIcon: Windows Explorer File Row Component'
+sidebarTitle: 'FolderIcon'
+description: 'FolderIcon renders a Windows 98-style file row with a Framer Motion animated folder, file name, optional NEW badge, size, and last-modified date columns.'
+---
+
+Long before cloud storage and tabbed file browsers, Windows 98's Explorer pane defined how millions of people understood their computers — rows of yellow folders, file sizes in kilobytes, and timestamps frozen in the late nineties. `FolderIcon` brings that aesthetic into React: a hoverable file row complete with a layered SVG folder that physically opens via a Framer Motion spring animation, a dotted-border separator, and monospaced size and date columns rendered in the VT323 terminal font. Pass the optional `isNew` prop and a blinking red pixel-font badge snaps onto the filename — the digital equivalent of a sticky note on a manila folder.
+
+## Props
+
+<ParamField path="name" type="string" required>
+  The display name of the file or folder shown as an underlined blue link label in the row.
+</ParamField>
+
+<ParamField path="size" type="string" required>
+  Human-readable file size string (e.g. `'14.2 MB'`, `'320 KB'`). Rendered right-aligned in a 64 px column using the VT323 font.
+</ParamField>
+
+<ParamField path="date" type="string" required>
+  Last-modified date string displayed verbatim (e.g. `'10/24/2023'`). Rendered right-aligned in a 96 px column beside the size.
+</ParamField>
+
+<ParamField path="isNew" type="boolean">
+  When `true`, appends a blinking red `NEW` badge directly after the filename. Defaults to `false` when omitted.
+</ParamField>
+
+<Note>
+  The folder animation is driven by Framer Motion. The folder's inner "document" lifts 8 px upward on a spring (`stiffness: 300, damping: 20`) while the lid rotates −20° on the X axis, giving the illusion of the folder opening toward the viewer.
+</Note>
+
+## Usage
+
+```jsx
+import { FolderIcon } from './components/FolderIcon';
+
+export default function FileList() {
+  return (
+    <div className="w-full max-w-lg">
+      {/* Standard folder row */}
+      <FolderIcon
+        name="portfolio-v2"
+        size="14.2 MB"
+        date="10/24/2023"
+      />
+
+      {/* Row flagged as recently added */}
+      <FolderIcon
+        name="resume_final_FINAL.doc"
+        size="320 KB"
+        date="11/01/2023"
+        isNew={true}
+      />
+
+      {/* Older archive entry — no badge */}
+      <FolderIcon
+        name="projects_archive"
+        size="2.1 GB"
+        date="06/15/2019"
+      />
+    </div>
+  );
+}
+```
+
+## Customization tips
+
+<Tip>
+  **Wrapping in a scrollable list** — Nest multiple `FolderIcon` rows inside a container with `overflow-y-auto` and a fixed height to replicate the classic Explorer detail-pane look. Adding a header row (`Name · Size · Date Modified`) with matching column widths completes the illusion.
+</Tip>
+
+<Tip>
+  **Controlling the NEW badge** — The `isNew` flag is a plain boolean, so you can derive it dynamically. For example, compare each entry's date string against `Date.now()` and pass `isNew={daysSince(entry.date) < 7}` to automatically badge anything added in the last week.
+</Tip>
+
+<Tip>
+  **Adjusting animation feel** — The spring parameters live in the `transition` prop of the Framer Motion `motion.div`. Increase `stiffness` for a snappier open, or lower `damping` to add a subtle bounce that sells the physical folder metaphor even further.
+</Tip>

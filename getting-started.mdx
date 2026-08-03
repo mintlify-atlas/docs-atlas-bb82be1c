@@ -1,0 +1,166 @@
+---
+title: "Get Started with Retro Webpage in Minutes"
+sidebarTitle: "Getting Started"
+description: "Clone the Retro Webpage repo, install dependencies, run the Vite dev server, and start customizing your retro-themed portfolio site."
+---
+
+Retro Webpage is designed to go from zero to running local dev server in a single terminal session. This guide walks you through cloning the repository, installing dependencies, starting the Vite dev server, and understanding how the project is structured so you can start customising your portfolio straight away.
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Node.js 18 or later** — [nodejs.org](https://nodejs.org)
+- **A package manager** — npm (bundled with Node), yarn, or pnpm
+
+## Installation
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the project from GitHub and move into the project directory:
+
+    ```bash
+    git clone https://github.com/apursley2012/retro-webpage.git && cd retro-webpage
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Install all required packages using your preferred package manager:
+
+    <CodeGroup>
+      ```bash npm
+      npm install
+      ```
+
+      ```bash yarn
+      yarn install
+      ```
+
+      ```bash pnpm
+      pnpm install
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Start the development server">
+    Start the Vite dev server with hot module replacement:
+
+    <CodeGroup>
+      ```bash npm
+      npm run dev
+      ```
+
+      ```bash yarn
+      yarn dev
+      ```
+
+      ```bash pnpm
+      pnpm dev
+      ```
+    </CodeGroup>
+
+    Vite will print a local URL in the terminal. Open [http://localhost:5173](http://localhost:5173) in your browser to see the retro homepage.
+  </Step>
+
+  <Step title="Build for production">
+    Compile and bundle the app into the `dist/` output directory:
+
+    <CodeGroup>
+      ```bash npm
+      npm run build
+      ```
+
+      ```bash yarn
+      yarn build
+      ```
+
+      ```bash pnpm
+      pnpm build
+      ```
+
+    The build output lands in `dist/` and is ready to deploy to any static host (Netlify, Vercel, GitHub Pages, etc.).
+    </CodeGroup>
+  </Step>
+
+  <Step title="Preview the production build">
+    Serve the `dist/` folder locally to verify the production output before deploying:
+
+    <CodeGroup>
+      ```bash npm
+      npm run preview
+      ```
+
+      ```bash yarn
+      yarn preview
+      ```
+
+      ```bash pnpm
+      pnpm preview
+      ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Project Structure
+
+The repository layout separates the bundled runtime (`assets/`, `components/`) from the per-route HTML entry points (`pages/`):
+
+```
+retro-webpage/
+├── index.html          # Entry HTML — root route (/)
+├── assets/
+│   ├── main.js         # Bundled app entry (React + Router + all pages)
+│   ├── main.css        # Compiled Tailwind styles
+│   └── proxy.js        # Framer Motion re-export shim
+├── components/         # 16 retro UI components (pre-built bundles)
+│   ├── Layout.js
+│   ├── BeveledPanel.js
+│   ├── MarqueeBanner.js
+│   ├── VisitorCounter.js
+│   ├── WinampPlayer.js
+│   ├── SparkleCursor.js
+│   ├── TiledBackground.js
+│   ├── WebringNav.js
+│   ├── NewBadge.js
+│   ├── UnderConstruction.js
+│   ├── FolderIcon.js
+│   ├── SystemRequirements.js
+│   ├── MoodEntry.js
+│   ├── GuestbookForm.js
+│   ├── GuestbookEntries.js
+│   └── ForumQuote.js
+└── pages/              # Per-route HTML shells (each loads assets/main.js)
+    ├── About.html
+    ├── Blog.html
+    ├── CaseStudies.html
+    ├── Contact.html
+    ├── Projects.html
+    ├── Skills.html
+    ├── Testimonials.html
+    └── Work.html
+```
+
+## How the SPA Routing Works
+
+Retro Webpage is a **single-page application**. The HTML files under `pages/` are static entry points — each one simply loads `assets/main.js` and sets a `window.__STATIC_PAGE_ROUTE__` variable that tells the app which hash route to activate on first load. For example, `pages/About.html` contains:
+
+```html
+<script>
+  window.__STATIC_PAGE_ROUTE__ = "/about";
+  if (!window.location.hash || window.location.hash === "#/") {
+    window.location.hash = "/about";
+  }
+</script>
+```
+
+Once `main.js` boots, **React Router v6 takes over all navigation entirely client-side**. Clicking a tab in the `Layout` header triggers a React Router `<Link>` — no full page reload ever happens. The HTML shells exist only to give static hosts a file to serve for direct URL access.
+
+<Note>
+  The files in `components/*.js` are **pre-built bundles** produced by Vite. You can import and use them as normal React components without any extra build step. However, if you want to change a component's markup, styles, or behaviour, you must edit the original JSX source files and run `npm run build` to regenerate the bundles. Editing the `.js` files in `components/` directly will work for the current session but your changes will be overwritten on the next build.
+</Note>
+
+To add a brand-new route, see [Customizing Routing](/customization/routing) for a step-by-step guide on registering a path in React Router and creating a matching HTML shell.
+
+<Tip>
+  The fastest way to make Retro Webpage feel like your own is to swap the colour palette. Head to [Customizing Colors](/customization/colors) to learn how to remap the `retro-teal`, `retro-pink`, and `retro-lime` Tailwind tokens to any colours you like — no component edits required.
+</Tip>

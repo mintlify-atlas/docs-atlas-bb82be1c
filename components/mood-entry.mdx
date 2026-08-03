@@ -1,0 +1,93 @@
+---
+title: 'MoodEntry: LiveJournal Diary Entry Component'
+sidebarTitle: 'MoodEntry'
+description: 'MoodEntry renders a LiveJournal-inspired diary card with post title, timestamp, current mood, now-playing music field, and freeform React children for entry content.'
+---
+
+LiveJournal defined a generation of personal publishing — lavender color schemes, italic moods, and the gentle ritual of logging what you were listening to before every post. `MoodEntry` captures that energy in a self-contained React card: a `#9999cc` periwinkle header bar carries the entry title and date, a white body area renders whatever React children you pass, and a soft `#f0f0f8` footer row lines up the **Current Mood** and **Now Playing** metadata fields with their italic values and decorative glyphs (`(-_-)` and `♫`). The whole card sits inside a light lavender (`#e6e6fa`) outer wrapper with a classic two-pixel drop shadow that recalls the era of hand-coded CSS.
+
+## Props
+
+<ParamField path="title" type="string" required>
+  Entry headline displayed in bold white text on the left side of the periwinkle header bar.
+</ParamField>
+
+<ParamField path="date" type="string" required>
+  Timestamp string shown in smaller normal-weight text on the right side of the header bar (e.g. `'October 23rd, 2023'`, `'Mon, Nov 6 @ 11:42pm'`).
+</ParamField>
+
+<ParamField path="mood" type="string" required>
+  Current mood label rendered in italic beside the `(-_-)` emoticon in the footer (e.g. `'nostalgic'`, `'caffeinated'`, `'determined'`).
+</ParamField>
+
+<ParamField path="music" type="string" required>
+  Now-playing track or artist shown in italic beside the `♫` glyph in the footer (e.g. `'Daft Punk - Harder Better Faster Stronger'`).
+</ParamField>
+
+<ParamField path="content" type="ReactNode" required>
+  Freeform React children rendered inside the white body area. Accepts plain strings, paragraphs, lists, inline JSX — anything React can render.
+</ParamField>
+
+<Note>
+  The `(-_-)` emoticon and `♫` glyph are hardcoded in the component. They are part of the period-accurate aesthetic and cannot be swapped via props. If you need a different mood glyph, fork the component and replace the `text-lg` span contents directly.
+</Note>
+
+## Usage
+
+```jsx
+import { MoodEntry } from './components/MoodEntry';
+
+export default function Blog() {
+  return (
+    <div className="max-w-xl mx-auto space-y-8">
+      <MoodEntry
+        title="finally shipped the portfolio !!"
+        date="October 23rd, 2023"
+        mood="accomplished"
+        music="Daft Punk - Harder Better Faster Stronger"
+        content={
+          <>
+            <p>
+              ok so i stayed up until 3am but it is DONE. like actually done.
+              deployed and everything. the folder icons animate and the guestbook
+              works and i even added a visitor counter 🎉
+            </p>
+            <p className="mt-2">
+              shoutout to everyone who said "just use a template" — i chose
+              violence and built it from scratch and i regret nothing.
+            </p>
+          </>
+        }
+      />
+
+      <MoodEntry
+        title="debugging is just archaeology"
+        date="November 6th, 2023"
+        mood="caffeinated"
+        music="lo-fi hip hop radio - beats to code/relax to"
+        content={
+          <p>
+            spent four hours today hunting a z-index bug in the webring nav.
+            turns out i had <code>position: relative</code> missing on the
+            parent. FOUR HOURS. anyway the site looks great.
+          </p>
+        }
+      />
+    </div>
+  );
+}
+```
+
+## Customization tips
+
+<Tip>
+  **Rich content area** — The `content` prop accepts any `ReactNode`, so you can pass formatted paragraphs, inline `<code>` snippets, images, or even nested components. The body uses `leading-relaxed` and `text-sm` so long posts remain readable without extra wrapper styles.
+</Tip>
+
+<Tip>
+  **Sorting entries chronologically** — Store your entries as an array of objects matching the prop shape and use `.map()` to render a `MoodEntry` per item. Reverse the array before mapping to show the newest entry at the top, just like a real LiveJournal feed.
+</Tip>
+
+<Tip>
+  **Matching the color scheme** — The card's periwinkle palette (`#9999cc` / `#e6e6fa`) pairs naturally with the rest of the retro template. If you're customizing the site's color story, note that these colors are applied as arbitrary Tailwind values and can be swapped site-wide by updating a shared theme token in `tailwind.config.js`.
+</Tip>

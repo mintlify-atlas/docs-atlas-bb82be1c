@@ -1,0 +1,132 @@
+---
+title: "Skills Page: Tech Specs and Skill Progress Bars"
+sidebarTitle: "Skills"
+description: "The Skills page pairs a Windows 98 system requirements panel with animated CSS progress bars showing proficiency levels across your tech stack."
+---
+
+The Skills page (`/skills`) frames your technical abilities as if they were software prerequisites listed on the back of a shrink-wrapped CD-ROM box. A `SystemRequirements` component renders a black-terminal panel listing minimum and recommended specifications, followed by a set of labeled CSS gradient progress bars — one per skill — each displaying a percentage value in a `font-vt323` monospace label.
+
+## What It Renders
+
+The page is a centered flex column (`flex flex-col items-center`) containing:
+
+1. **`<h1>` heading** — `"Tech Specs"` in `font-pixel text-purple-600` centered.
+2. **`SystemRequirements`** — A self-contained `BeveledPanel` (`variant="teal"`, titled `SYSTEM REQUIREMENTS`) that wraps a black terminal-style `<div>` listing two sections:
+   - **MINIMUM SPECIFICATIONS** (green heading) — OS, Processor, Memory, Graphics, Network.
+   - **DEVELOPER SKILLS** (pink heading) — Required, Recommended, Optimal, Unsupported tiers.
+3. **Skill Progress Bars** — A `max-w-2xl` section headed `Skill Progress Bars` (VT323 font), followed by five bar rows. Each row has:
+   - A `w-48 font-bold text-gray-700` label.
+   - A `bevel-inset` track with a `bg-gradient-to-r from-blue-500 to-purple-500` fill set via inline `style={{ width: "${percent}%" }}`.
+   - A `w-12 font-vt323 text-lg` percentage label.
+
+<Note>
+  The `SystemRequirements` component is fully self-contained and takes no props. All specification text is hard-coded inside `components/SystemRequirements.js`. Edit that file to change the listed specs.
+</Note>
+
+## Component Overview
+
+<CardGroup cols={2}>
+  <Card title="SystemRequirements" icon="microchip">
+    A `BeveledPanel`-wrapped black terminal listing minimum system specs and developer skill tiers. No props — edit the source to customise copy.
+  </Card>
+  <Card title="Skill Progress Bars" icon="bars-progress">
+    Inline JSX — an array of `{ name, percent }` objects mapped to beveled gradient bars. Edit the array to add, remove, or adjust skills.
+  </Card>
+</CardGroup>
+
+## Default Skill Entries
+
+| Skill Name | Percentage |
+|------------|-----------|
+| JavaScript / TypeScript | 90% |
+| React / Next.js | 85% |
+| CSS / Tailwind | 95% |
+| Node.js / Backend | 70% |
+| Photoshop (Making Buttons) | 100% |
+
+## Customization Example
+
+Add new skills or adjust proficiency percentages by editing the `skills` array:
+
+```jsx
+import SystemRequirements from "./components/SystemRequirements";
+
+export default function Skills() {
+  // Edit this array to change skills and proficiency levels
+  const skills = [
+    { name: "JavaScript / TypeScript", percent: 90 },
+    { name: "React / Next.js",         percent: 85 },
+    { name: "CSS / Tailwind",          percent: 95 },
+    { name: "Node.js / Backend",       percent: 70 },
+    { name: "Photoshop (Making Buttons)", percent: 100 },
+    // Add new skills ↓
+    // { name: "GraphQL", percent: 75 },
+    // { name: "Docker",  percent: 60 },
+  ];
+
+  return (
+    <div className="flex flex-col items-center">
+      <h1 className="font-pixel text-2xl text-purple-600 mb-8 text-center">
+        Tech Specs
+      </h1>
+
+      {/* Self-contained — no props needed */}
+      <SystemRequirements />
+
+      <div className="mt-12 w-full max-w-2xl">
+        <h3 className="font-vt323 text-xl mb-4 border-b-2 border-purple-300">
+          Skill Progress Bars
+        </h3>
+
+        <div className="space-y-4 font-sans text-sm">
+          {skills.map((skill, i) => (
+            <div key={i} className="flex items-center gap-4">
+              {/* Skill label — adjust w-48 if names are longer */}
+              <div className="w-48 font-bold text-gray-700">{skill.name}</div>
+
+              {/* Progress track */}
+              <div className="flex-grow h-4 bevel-inset bg-gray-200 p-[1px]">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                  style={{ width: `${skill.percent}%` }}
+                />
+              </div>
+
+              {/* Percentage label */}
+              <div className="w-12 text-right font-vt323 text-lg">
+                {skill.percent}%
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+## Props Reference
+
+### `SystemRequirements`
+
+`SystemRequirements` accepts **no props**. All copy — OS name, processor speed, RAM, graphics, network, and skill tiers — is hard-coded inside `components/SystemRequirements.js`.
+
+| Section | Heading Color | Default Entries |
+|---------|--------------|-----------------|
+| Minimum Specifications | `text-retro-lime` | Windows 98 / Mac OS 9, Pentium II 233 MHz, 64 MB RAM, 800×600 / 256 colors, 56k Dial-up |
+| Developer Skills | `text-retro-pink` | Required: HTML/CSS/JS · Recommended: React/Tailwind/Git · Optimal: TS/Node/Caffeine · Unsupported: IE6 |
+
+### Skill Bar Fields
+
+The progress bars are rendered from a plain JavaScript array. Each entry has two fields:
+
+<ParamField path="name" type="string" required>
+  The human-readable skill label. Displayed in a `w-48` fixed-width column — keep names under ~28 characters or adjust the width class.
+</ParamField>
+<ParamField path="percent" type="number" required>
+  Integer between `0` and `100`. Applied as an inline `width` style on the gradient fill `<div>`. Also rendered as the trailing `%` label.
+</ParamField>
+
+<Tip>
+  The progress bar fill uses a Tailwind `bg-gradient-to-r from-blue-500 to-purple-500`. To change the colour scheme for an individual bar, swap those classes or use an inline `background` style instead.
+</Tip>
